@@ -183,7 +183,9 @@ public class HealthFirst extends WrapperClass {
 				By.xpath("//table[@class='dataTable claimDetailsTable']/tbody/tr[" + sizeOfClaimDetailsRows + "]/td"));
 
 		for (WebElement eachLegend : allLegendsAsWebElement) {
+
 			allLegends.add(eachLegend.getText().toString().trim());
+
 		}
 
 		legendData.put("Legends", allLegends);

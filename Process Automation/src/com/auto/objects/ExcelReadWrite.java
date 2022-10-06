@@ -138,10 +138,12 @@ public class ExcelReadWrite extends WrapperClass {
 			outPutRow.createCell(5).setCellValue(EachRowclaimDetails.getValue().get(15).get("Paid Amount"));
 
 			if (legend) {
-				for (String eachString : legendData.get("Legends")) {
-					outPutRow.createCell(6).setCellValue(eachString);
-					legend = false;
-				}
+//				for (String eachString : legendData.get("Legends")) {
+//					outPutRow.createCell(6).setCellValue(eachString);
+				String eachLegend = String.join(", ", legendData.get("Legends"));
+				outPutRow.createCell(6).setCellValue(eachLegend);
+				legend = false;
+//				}
 
 			}
 			rowNumber++;
@@ -165,7 +167,8 @@ public class ExcelReadWrite extends WrapperClass {
 	}
 
 	public void filOut() throws IOException {
-		FileOutputStream fileOut = new FileOutputStream(System.getProperty("user.dir") + "//Health First_1.xlsx");
+		FileOutputStream fileOut = new FileOutputStream(
+				"C://Users//Innovativedell//eclipse-workspace//Process Automation//OutPut File.xlsx");
 		outPutworkBook.write(fileOut);
 		fileOut.close();
 	}
