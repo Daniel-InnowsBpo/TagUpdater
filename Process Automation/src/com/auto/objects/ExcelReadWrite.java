@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -26,6 +27,7 @@ public class ExcelReadWrite extends WrapperClass {
 	FileInputStream fis;
 	FileOutputStream fos;
 	String filePath = System.getProperty("user.dir") + "//ClaimStatusCheckData.xlsx";
+	WrapperClass wrap = new WrapperClass();
 
 	public XSSFWorkbook outPutworkBook = new XSSFWorkbook();
 
@@ -64,9 +66,6 @@ public class ExcelReadWrite extends WrapperClass {
 		}
 		dataFromExcelWorkBook.put(sheet.getSheetName(), childData);
 		fis.close();
-//		fos = new FileOutputStream(filePath);
-//		workBook.write(fos);
-//		fos.close();
 		return dataFromExcelWorkBook;
 	}
 
@@ -124,33 +123,33 @@ public class ExcelReadWrite extends WrapperClass {
 		boolean legend = true;
 
 		for (Entry<Integer, List<Map<String, String>>> EachRowclaimDetails : claimDetailsRowWise.entrySet()) {
-			String typeOfSheet;
 
 			outPutRow = outPutSheet.createRow(rowNumber);
 
 			outPutRow.createCell(fileNameCount);
-//			if (EachRowclaimDetails.getValue().get(15).get("Paid Amount").equals("$0.00")) {
 			outPutRow.createCell(0).setCellValue(memberDetails.get("Member Details").get("Member Details").trim());
 			outPutRow.createCell(1).setCellValue(overViewData.get("OverView").get("Claim Number").trim());
 			outPutRow.createCell(2).setCellValue(EachRowclaimDetails.getValue().get(1).get("Pro-CPT Code"));
-			outPutRow.createCell(3).setCellValue(EachRowclaimDetails.getValue().get(5).get("Total Charge"));
-			outPutRow.createCell(4).setCellValue(EachRowclaimDetails.getValue().get(10).get("Remark Code"));
-			outPutRow.createCell(5).setCellValue(EachRowclaimDetails.getValue().get(15).get("Paid Amount"));
+			outPutRow.createCell(3).setCellValue(overViewData.get("OverView").get("Claim Received").trim());
+			outPutRow.createCell(4).setCellValue(overViewData.get("OverView").get("Status").trim());
+			outPutRow.createCell(5).setCellValue(overViewData.get("OverView").get("Paid Amount").trim());
+			outPutRow.createCell(6).setCellValue(overViewData.get("OverView").get("Paid Date").trim());
+//			outPutRow.createCell(7).setCellValue(wrap.gettext("Health First Claim Number").toString().trim());
+
+			outPutRow.createCell(7).setCellValue(EachRowclaimDetails.getValue().get(5).get("Total Charge"));
+			outPutRow.createCell(8).setCellValue(EachRowclaimDetails.getValue().get(10).get("Remark Code"));
+			outPutRow.createCell(9).setCellValue(EachRowclaimDetails.getValue().get(15).get("Paid Amount"));
 
 			if (legend) {
-//				for (String eachString : legendData.get("Legends")) {
-//					outPutRow.createCell(6).setCellValue(eachString);
-				String eachLegend = String.join(", ", legendData.get("Legends"));
-				outPutRow.createCell(6).setCellValue(eachLegend);
+				String eachLegend = String.join("," + "/n", legendData.get("Legends"));
+				outPutSheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber, 10, 16));
+				outPutRow.createCell(10).setCellValue(eachLegend);
 				legend = false;
-//				}
 
 			}
 			rowNumber++;
-//			}
-//			}
 		}
-
+		rowNumber++;
 		fileNameCount++;
 	}
 
@@ -159,16 +158,22 @@ public class ExcelReadWrite extends WrapperClass {
 		outPutRow.createCell(0).setCellValue("Service ID");
 		outPutRow.createCell(1).setCellValue("Claim ID");
 		outPutRow.createCell(2).setCellValue("CPT Code");
-		outPutRow.createCell(3).setCellValue("Total Charge");
-		outPutRow.createCell(4).setCellValue("Remark COde");
+		outPutRow.createCell(3).setCellValue("Claim Received Date");
+		outPutRow.createCell(4).setCellValue("Status");
 		outPutRow.createCell(5).setCellValue("Paid Amount");
-		outPutRow.createCell(6).setCellValue("Remark Code Description");
+		outPutRow.createCell(6).setCellValue("Paid Date");
+//		outPutRow.createCell(7).setCellValue("Check/EFT/VCard #");
+
+		outPutRow.createCell(7).setCellValue("Total Charge");
+		outPutRow.createCell(8).setCellValue("Remark COde");
+		outPutRow.createCell(9).setCellValue("Paid Amount");
+		outPutSheet.addMergedRegion(new CellRangeAddress(0, 0, 10, 16));
+		outPutRow.createCell(10).setCellValue("Remark Code Description");
 
 	}
 
 	public void filOut() throws IOException {
-		FileOutputStream fileOut = new FileOutputStream(
-				"C://Users//Innovativedell//eclipse-workspace//Process Automation//OutPut File.xlsx");
+		FileOutputStream fileOut = new FileOutputStream(System.getProperty("user.dir") + "//OutPut File.xlsx");
 		outPutworkBook.write(fileOut);
 		fileOut.close();
 	}

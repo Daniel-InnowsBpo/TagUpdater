@@ -52,15 +52,6 @@ public class HealthFirst extends WrapperClass {
 
 		Thread.sleep(2000);
 
-//		if (isDisplayed("Health First jumping window")) {
-//			flag = true;
-//		}
-//
-//		if (flag) {
-//			click("Health First jumping window Close", useThis);
-//			flag = false;
-//		}
-
 		click("Health First Proceed Button", useThis);
 		Thread.sleep(2000);
 		mouseHover("Health First Claims Search", useThis);
@@ -105,30 +96,69 @@ public class HealthFirst extends WrapperClass {
 						writeHere("Health First Service Start Date", dataFromExcelWorkBook.get(sheetName).get(rowNum)
 								.get("Service Start Date").toString().trim(), useThis);
 						clear("Health First Service End Date", useThis);
+						Thread.sleep(1000);
+						scroll("500");
+						click("Health First Submit Button", useThis);
+//						datainitilization();
 						dataExtract();
-						excelReadWrite.filOut();
+
+						if (dataFromExcelWorkBook.get(sheetName).size() > 1) {
+							mouseHover("Health First Claims Search", useThis);
+
+							click("Health First Claims Lookup", useThis);
+							if (isDisplayed("Health First jumping window")) {
+								flag = true;
+							}
+
+							if (flag) {
+								click("Health First jumping window Close", useThis);
+								flag = false;
+							}
+
+							waitFor("Health First Claims search Page");
+						}
+
+//						click("Health First New Search", useThis);
+//						waitFor("Health First all Claims in search");
+
 						// Any error code to display
 					}
 
 //						}
 				}
 				System.out.println("completed");
+
 				break;
 
 				// Add code here for other websites to check status
+
 			}
 
 //		}
-
+			excelReadWrite.filOut();
 		}
 
 	}
 
+	private void datainitilization() {
+		// TODO Auto-generated method stub
+		dataFromExcelWorkBook = new HashMap<>();
+		overViewData = new HashMap<>();
+		overViewDataChildData = new HashMap<>();
+		memberDetails = new HashMap<>();
+		memberDetailsChildData = new HashMap<>();
+		claimDetailsRowWise = new HashMap<>();
+
+		claimDetails = new HashMap<>();
+
+		remarks = new ArrayList<>();
+
+	}
+
 	private void dataExtract() throws IOException, InterruptedException {
-		Thread.sleep(1000);
-		scroll("500");
+
 		int claimRow = 2;
-		click("Health First Submit Button", useThis);
+
 		List<WebElement> numberOfclaims = new ArrayList<>();
 		numberOfclaims = driver.findElements(By.xpath(
 				"//div[@class='tabBody']//div[@class='pagegrid_container']/table/tbody/tr[contains(@class,'row')]/td[2]/a"));
@@ -152,6 +182,13 @@ public class HealthFirst extends WrapperClass {
 			memberDetails.put("Member Details", memberDetailsChildData);
 
 			overViewDataChildData.put("Claim Number", dataExtractedFromWebElement("Overview", "Claim Number"));
+			overViewDataChildData.put("Claim Received", dataExtractedFromWebElement("Overview", "Claim Received"));
+			overViewDataChildData.put("Status", dataExtractedFromWebElement("Overview", "Status"));
+			overViewDataChildData.put("Paid Amount", dataExtractedFromWebElement("Overview", "Paid Amount"));
+			overViewDataChildData.put("Paid Date", dataExtractedFromWebElement("Overview", "Paid Date"));
+//			overViewDataChildData.put("Check/EFT/VCard #",
+//					dataExtractedFromWebElement("Overview", "Check/EFT/VCard #"));
+
 			overViewData.put("OverView", overViewDataChildData);
 
 			claimDetailsRowWise = claimDataExtracter();

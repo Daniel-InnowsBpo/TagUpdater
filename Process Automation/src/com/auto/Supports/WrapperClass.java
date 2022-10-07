@@ -252,8 +252,8 @@ public class WrapperClass {
 			textBoxName = AttributeFinder.attributefinder(textBoxName, attributeSplitter(attribute_attributeValue),
 					attributeValueSplitter(attribute_attributeValue));
 			driver.findElement(textBoxName).click();
-			System.out.println(
-					"Data From Excell&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" + DataReader.getEachKeyandKeyValue(dataKey));
+//			System.out.println(
+//					"Data From Excell&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" + DataReader.getEachKeyandKeyValue(dataKey));
 			driver.findElement(textBoxName).sendKeys(DataReader.getEachKeyandKeyValue(dataKey));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -368,7 +368,7 @@ public class WrapperClass {
 			}
 
 			else {
-				System.out.println("Please select valid Selectors");
+//				System.out.println("Please select valid Selectors");
 			}
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
