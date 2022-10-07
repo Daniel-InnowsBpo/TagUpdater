@@ -20,7 +20,8 @@ public class HealthFirst extends WrapperClass {
 	boolean flag = false;
 	Map<String, Map<Integer, Map<String, String>>> dataFromExcelWorkBook = new HashMap<>();
 	Map<String, List<String>> legendData;
-
+	String sheetName = null;
+	int rowNum;
 	Map<String, Map<String, String>> overViewData = new HashMap<>();
 	Map<String, String> overViewDataChildData = new HashMap<>();
 	Map<String, Map<String, String>> memberDetails = new HashMap<>();
@@ -65,14 +66,14 @@ public class HealthFirst extends WrapperClass {
 		for (Entry<String, Map<Integer, Map<String, String>>> eachSheet : dataFromExcelWorkBook.entrySet()) {
 
 			for (int i = 0; i < dataFromExcelWorkBook.size(); i++) {
-				String sheetName = eachSheet.getKey().toString();
+				sheetName = eachSheet.getKey().toString();
 				switch (sheetName) {
 
 				case "Health First":
 
 					for (Map.Entry<Integer, Map<String, String>> excelData : dataFromExcelWorkBook.get(sheetName)
 							.entrySet()) {
-						int rowNum = excelData.getKey();
+						rowNum = excelData.getKey();
 
 //						for (Map.Entry<String, String> data : dataFromExcelWorkBook.get(sheetName).get(rowNum)
 //								.entrySet()) {
@@ -163,48 +164,56 @@ public class HealthFirst extends WrapperClass {
 		numberOfclaims = driver.findElements(By.xpath(
 				"//div[@class='tabBody']//div[@class='pagegrid_container']/table/tbody/tr[contains(@class,'row')]/td[2]/a"));
 
-		for (WebElement eachClaim : numberOfclaims) {
-			if (claimRow == 2) {
-				eachClaim.click();
-			} else {
-				scroll("500");
-				click("Health First Submit Button", useThis);
+		if (numberOfclaims.isEmpty()) {
+			excelReadWrite.OutputExcelCreation(memberDetails, overViewData, claimDetailsRowWise, legendData, true);
+			ExcelReadWrite.dataForEmptyRecord(dataFromExcelWorkBook, sheetName, rowNum);
+		} else {
+			for (WebElement eachClaim : numberOfclaims) {
+				if (claimRow == 2) {
+					eachClaim.click();
+				} else {
+					scroll("500");
+					click("Health First Submit Button", useThis);
 
-				driver.findElement(By.xpath("//div[@class='tabBody']//div[@class='pagegrid_container']/table/tbody/tr["
-						+ claimRow + "]/td[2]/a")).click();
+					driver.findElement(
+							By.xpath("//div[@class='tabBody']//div[@class='pagegrid_container']/table/tbody/tr["
+									+ claimRow + "]/td[2]/a"))
+							.click();
+				}
+
+				waitFor("Health First Claim Page ID");
+				otherDetails = new ArrayList<>();
+				System.out.println("clicked");
+				memberDetailsChildData.put("Member Details",
+						dataExtractedFromWebElement("Member Details", "Patient Acct #"));
+				memberDetails.put("Member Details", memberDetailsChildData);
+
+				overViewDataChildData.put("Claim Number", dataExtractedFromWebElement("Overview", "Claim Number"));
+				overViewDataChildData.put("Claim Received", dataExtractedFromWebElement("Overview", "Claim Received"));
+				overViewDataChildData.put("Status", dataExtractedFromWebElement("Overview", "Status"));
+				overViewDataChildData.put("Paid Amount", dataExtractedFromWebElement("Overview", "Paid Amount"));
+				overViewDataChildData.put("Paid Date", dataExtractedFromWebElement("Overview", "Paid Date"));
+//				overViewDataChildData.put("Check/EFT/VCard #",
+//						dataExtractedFromWebElement("Overview", "Check/EFT/VCard #"));
+
+				overViewData.put("OverView", overViewDataChildData);
+
+				claimDetailsRowWise = claimDataExtracter();
+
+				claimDetails.put(dataExtractedFromWebElement("Overview", "Claim Number"), claimDetailsRowWise);
+
+				legendData = dataExtractForLegends();
+
+				excelReadWrite.splitClaims(claimDetailsRowWise);
+				excelReadWrite.OutputExcelCreation(memberDetails, overViewData, claimDetailsRowWise, legendData, false);
+
+				if (numberOfclaims.size() > 1) {
+					click("Health First Back to Results", useThis);
+					waitFor("Health First New Search");
+					claimRow++;
+				}
+
 			}
-
-			waitFor("Health First Claim Page ID");
-			otherDetails = new ArrayList<>();
-			System.out.println("clicked");
-			memberDetailsChildData.put("Member Details",
-					dataExtractedFromWebElement("Member Details", "Patient Acct #"));
-			memberDetails.put("Member Details", memberDetailsChildData);
-
-			overViewDataChildData.put("Claim Number", dataExtractedFromWebElement("Overview", "Claim Number"));
-			overViewDataChildData.put("Claim Received", dataExtractedFromWebElement("Overview", "Claim Received"));
-			overViewDataChildData.put("Status", dataExtractedFromWebElement("Overview", "Status"));
-			overViewDataChildData.put("Paid Amount", dataExtractedFromWebElement("Overview", "Paid Amount"));
-			overViewDataChildData.put("Paid Date", dataExtractedFromWebElement("Overview", "Paid Date"));
-//			overViewDataChildData.put("Check/EFT/VCard #",
-//					dataExtractedFromWebElement("Overview", "Check/EFT/VCard #"));
-
-			overViewData.put("OverView", overViewDataChildData);
-
-			claimDetailsRowWise = claimDataExtracter();
-
-			claimDetails.put(dataExtractedFromWebElement("Overview", "Claim Number"), claimDetailsRowWise);
-
-			legendData = dataExtractForLegends();
-
-			excelReadWrite.splitClaims(claimDetailsRowWise);
-			excelReadWrite.OutputExcelCreation(memberDetails, overViewData, claimDetailsRowWise, legendData);
-			if (numberOfclaims.size() > 1) {
-				click("Health First Back to Results", useThis);
-				waitFor("Health First New Search");
-				claimRow++;
-			}
-
 		}
 
 	}

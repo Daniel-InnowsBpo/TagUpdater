@@ -31,10 +31,10 @@ public class ExcelReadWrite extends WrapperClass {
 
 	public XSSFWorkbook outPutworkBook = new XSSFWorkbook();
 
-	XSSFRow outPutRow;
-	XSSFSheet outPutSheet;
+	static XSSFRow outPutRow;
+	static XSSFSheet outPutSheet;
 	int totalNumberOfSheets;
-	int rowNumber;
+	static int rowNumber;
 	int cellNumber = 0;
 
 	Map<String, Map<Integer, Map<String, String>>> dataFromExcelWorkBook = new HashMap<>();
@@ -89,6 +89,26 @@ public class ExcelReadWrite extends WrapperClass {
 		}
 	}
 
+	private void createOuputForEmptyRecords(String typeOfSheet) {
+//		String fileName = new SimpleDateFormat("Health First_" + "yyyyMMddHHmm'.xlsx'").format(new Date());
+//		String fileName = System.getProperty("user.dir") + "//Health First_" + fileNameCount;
+
+		if (outPutworkBook.getSheet("typeOfSheet") == null) {
+			try {
+				outPutSheet = outPutworkBook.createSheet(typeOfSheet);
+				createHeadersForEmptyRecords();
+			} catch (IllegalArgumentException e) {
+				outPutworkBook.getSheet("typeOfSheet");
+			}
+
+			rowNumber = outPutSheet.getLastRowNum() + 1;
+
+		} else {
+			outPutworkBook.getSheet("typeOfSheet");
+			rowNumber = outPutSheet.getLastRowNum() + 1;
+		}
+	}
+
 	public void splitClaims(Map<Integer, List<Map<String, String>>> claimDetailsRowWise) {
 //		for (Map<String, String> eachData : eachRowclaimDetails.getValue().s) {
 //			eachData.size();
@@ -118,39 +138,53 @@ public class ExcelReadWrite extends WrapperClass {
 
 	public void OutputExcelCreation(Map<String, Map<String, String>> memberDetails,
 			Map<String, Map<String, String>> overViewData, Map<Integer, List<Map<String, String>>> claimDetailsRowWise,
-			Map<String, List<String>> legendData) throws IOException {
+			Map<String, List<String>> legendData, boolean isClaimEmpty) throws IOException {
 		int fileNameCount = 1;
 		boolean legend = true;
 
-		for (Entry<Integer, List<Map<String, String>>> EachRowclaimDetails : claimDetailsRowWise.entrySet()) {
+		if (isClaimEmpty) {
+			createOuputForEmptyRecords("Empty Records");
 
-			outPutRow = outPutSheet.createRow(rowNumber);
-
-			outPutRow.createCell(fileNameCount);
-			outPutRow.createCell(0).setCellValue(memberDetails.get("Member Details").get("Member Details").trim());
-			outPutRow.createCell(1).setCellValue(overViewData.get("OverView").get("Claim Number").trim());
-			outPutRow.createCell(2).setCellValue(EachRowclaimDetails.getValue().get(1).get("Pro-CPT Code"));
-			outPutRow.createCell(3).setCellValue(overViewData.get("OverView").get("Claim Received").trim());
-			outPutRow.createCell(4).setCellValue(overViewData.get("OverView").get("Status").trim());
-			outPutRow.createCell(5).setCellValue(overViewData.get("OverView").get("Paid Amount").trim());
-			outPutRow.createCell(6).setCellValue(overViewData.get("OverView").get("Paid Date").trim());
-//			outPutRow.createCell(7).setCellValue(wrap.gettext("Health First Claim Number").toString().trim());
-
-			outPutRow.createCell(7).setCellValue(EachRowclaimDetails.getValue().get(5).get("Total Charge"));
-			outPutRow.createCell(8).setCellValue(EachRowclaimDetails.getValue().get(10).get("Remark Code"));
-			outPutRow.createCell(9).setCellValue(EachRowclaimDetails.getValue().get(15).get("Paid Amount"));
-
-			if (legend) {
-				String eachLegend = String.join("," + "/n", legendData.get("Legends"));
-				outPutSheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber, 10, 16));
-				outPutRow.createCell(10).setCellValue(eachLegend);
-				legend = false;
-
-			}
 			rowNumber++;
+		} else {
+			for (Entry<Integer, List<Map<String, String>>> EachRowclaimDetails : claimDetailsRowWise.entrySet()) {
+
+				outPutRow = outPutSheet.createRow(rowNumber);
+
+				outPutRow.createCell(fileNameCount);
+				outPutRow.createCell(0).setCellValue(memberDetails.get("Member Details").get("Member Details").trim());
+				outPutRow.createCell(1).setCellValue(overViewData.get("OverView").get("Claim Number").trim());
+				outPutRow.createCell(2).setCellValue(EachRowclaimDetails.getValue().get(1).get("Pro-CPT Code"));
+				outPutRow.createCell(3).setCellValue(overViewData.get("OverView").get("Claim Received").trim());
+				outPutRow.createCell(4).setCellValue(overViewData.get("OverView").get("Status").trim());
+				outPutRow.createCell(5).setCellValue(overViewData.get("OverView").get("Paid Amount").trim());
+				outPutRow.createCell(6).setCellValue(overViewData.get("OverView").get("Paid Date").trim());
+//				outPutRow.createCell(7).setCellValue(wrap.gettext("Health First Claim Number").toString().trim());
+
+				outPutRow.createCell(7).setCellValue(EachRowclaimDetails.getValue().get(5).get("Total Charge"));
+				outPutRow.createCell(8).setCellValue(EachRowclaimDetails.getValue().get(10).get("Remark Code"));
+				outPutRow.createCell(9).setCellValue(EachRowclaimDetails.getValue().get(15).get("Paid Amount"));
+
+				if (legend) {
+					String eachLegend = String.join("," + "/n", legendData.get("Legends"));
+					outPutSheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber, 10, 16));
+					outPutRow.createCell(10).setCellValue(eachLegend);
+					legend = false;
+
+				}
+				rowNumber++;
+			}
 		}
+
 		rowNumber++;
 		fileNameCount++;
+	}
+
+	private void createHeadersForEmptyRecords() {
+		outPutRow = outPutSheet.createRow(0);
+		outPutRow.createCell(0).setCellValue("Member ID");
+		outPutRow.createCell(1).setCellValue("Member DOB");
+		outPutRow.createCell(2).setCellValue("Member DOS");
 	}
 
 	private void createHeaders() {
@@ -172,9 +206,26 @@ public class ExcelReadWrite extends WrapperClass {
 
 	}
 
+	public void emptywrite() {
+
+	}
+
 	public void filOut() throws IOException {
 		FileOutputStream fileOut = new FileOutputStream(System.getProperty("user.dir") + "//OutPut File.xlsx");
 		outPutworkBook.write(fileOut);
 		fileOut.close();
+	}
+
+	public static void dataForEmptyRecord(
+			Map<String, Map<Integer, Map<String, String>>> dataFromExcelWorkBookForEmptyRecord,
+			String sheetNameForEmptyRecord, int rowNumForEmptyRecord) {
+		outPutRow = outPutSheet.createRow(rowNumber);
+		outPutRow.createCell(0).setCellValue(dataFromExcelWorkBookForEmptyRecord.get(sheetNameForEmptyRecord)
+				.get(rowNumForEmptyRecord).get("Member ID"));
+		outPutRow.createCell(1).setCellValue(dataFromExcelWorkBookForEmptyRecord.get(sheetNameForEmptyRecord)
+				.get(rowNumForEmptyRecord).get("Member Date of Birth"));
+		outPutRow.createCell(2).setCellValue(dataFromExcelWorkBookForEmptyRecord.get(sheetNameForEmptyRecord)
+				.get(rowNumForEmptyRecord).get("Service Start Date"));
+		rowNumber++;
 	}
 }
