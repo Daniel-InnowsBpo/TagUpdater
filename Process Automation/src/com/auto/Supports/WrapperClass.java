@@ -130,8 +130,11 @@ public class WrapperClass {
 			text = element.getText();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+
 		}
 		return text;
 	}
@@ -160,6 +163,19 @@ public class WrapperClass {
 		}
 		return flag;
 
+	}
+
+	public void scrollToElement(String dataSet) {
+		String attribute_attributeValue = DataReader.getAttributeandAttributevalue(dataSet);
+		String attribute = attributeSplitter(attribute_attributeValue);
+		String attributeValue = attributeValueSplitter(attribute_attributeValue);
+		WebElement element = LocateHereDefault(attribute, attributeValue);
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+	}
+
+	public void scrollToElement(WebElement element) {
+
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
 	}
 
 	public void acceptAlert() {

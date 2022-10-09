@@ -3,12 +3,15 @@ package com.auto.objects;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -46,6 +49,7 @@ public class ExcelReadWrite extends WrapperClass {
 		fis = new FileInputStream(filePath);
 		workBook = new XSSFWorkbook(fis);
 		totalNumberOfSheets = workBook.getNumberOfSheets();
+		DataFormatter dataFormatter = new DataFormatter();
 
 		for (int i = 0; i < totalNumberOfSheets; i++) {
 			sheet = workBook.getSheetAt(i);
@@ -56,9 +60,10 @@ public class ExcelReadWrite extends WrapperClass {
 
 				for (int k = 0; k < sheet.getRow(0).getLastCellNum(); k++) {
 					if (row.getCell(k) != null) {
-						excelData.put(sheet.getRow(0).getCell(k).toString(), row.getCell(k).toString());
+						excelData.put(sheet.getRow(0).getCell(k).toString(),
+								dataFormatter.formatCellValue(row.getCell(k)));
 					} else {
-						excelData.put(sheet.getRow(0).getCell(k).toString(), null);
+						excelData.put(dataFormatter.formatCellValue(sheet.getRow(0).getCell(k)), null);
 					}
 				}
 				childData.put(j, excelData);
@@ -73,19 +78,20 @@ public class ExcelReadWrite extends WrapperClass {
 //		String fileName = new SimpleDateFormat("Health First_" + "yyyyMMddHHmm'.xlsx'").format(new Date());
 //		String fileName = System.getProperty("user.dir") + "//Health First_" + fileNameCount;
 
-		if (outPutworkBook.getSheet("typeOfSheet") == null) {
+		if (outPutworkBook.getSheet(typeOfSheet) == null) {
 			try {
 				outPutSheet = outPutworkBook.createSheet(typeOfSheet);
 				createHeaders();
 			} catch (IllegalArgumentException e) {
-				outPutworkBook.getSheet("typeOfSheet");
+				outPutworkBook.getSheet(typeOfSheet);
 			}
 
 			rowNumber = outPutSheet.getLastRowNum() + 1;
 
 		} else {
-			outPutworkBook.getSheet("typeOfSheet");
+			outPutSheet = outPutworkBook.getSheet(typeOfSheet);
 			rowNumber = outPutSheet.getLastRowNum() + 1;
+
 		}
 	}
 
@@ -93,18 +99,18 @@ public class ExcelReadWrite extends WrapperClass {
 //		String fileName = new SimpleDateFormat("Health First_" + "yyyyMMddHHmm'.xlsx'").format(new Date());
 //		String fileName = System.getProperty("user.dir") + "//Health First_" + fileNameCount;
 
-		if (outPutworkBook.getSheet("typeOfSheet") == null) {
+		if (outPutworkBook.getSheet(typeOfSheet) == null) {
 			try {
 				outPutSheet = outPutworkBook.createSheet(typeOfSheet);
 				createHeadersForEmptyRecords();
 			} catch (IllegalArgumentException e) {
-				outPutworkBook.getSheet("typeOfSheet");
+				outPutworkBook.getSheet(typeOfSheet);
 			}
 
 			rowNumber = outPutSheet.getLastRowNum() + 1;
 
 		} else {
-			outPutworkBook.getSheet("typeOfSheet");
+			outPutSheet = outPutworkBook.getSheet(typeOfSheet);
 			rowNumber = outPutSheet.getLastRowNum() + 1;
 		}
 	}
@@ -138,46 +144,40 @@ public class ExcelReadWrite extends WrapperClass {
 
 	public void OutputExcelCreation(Map<String, Map<String, String>> memberDetails,
 			Map<String, Map<String, String>> overViewData, Map<Integer, List<Map<String, String>>> claimDetailsRowWise,
-			Map<String, List<String>> legendData, boolean isClaimEmpty) throws IOException {
-		int fileNameCount = 1;
-		boolean legend = true;
+			String StringConvertedLegendData, boolean isClaimEmpty) throws IOException {
 
 		if (isClaimEmpty) {
 			createOuputForEmptyRecords("Empty Records");
-
-			rowNumber++;
+			isClaimEmpty = false;
 		} else {
 			for (Entry<Integer, List<Map<String, String>>> EachRowclaimDetails : claimDetailsRowWise.entrySet()) {
 
 				outPutRow = outPutSheet.createRow(rowNumber);
 
-				outPutRow.createCell(fileNameCount);
+//				outPutRow.createCell(fileNameCount);
 				outPutRow.createCell(0).setCellValue(memberDetails.get("Member Details").get("Member Details").trim());
 				outPutRow.createCell(1).setCellValue(overViewData.get("OverView").get("Claim Number").trim());
 				outPutRow.createCell(2).setCellValue(EachRowclaimDetails.getValue().get(1).get("Pro-CPT Code"));
 				outPutRow.createCell(3).setCellValue(overViewData.get("OverView").get("Claim Received").trim());
 				outPutRow.createCell(4).setCellValue(overViewData.get("OverView").get("Status").trim());
-				outPutRow.createCell(5).setCellValue(overViewData.get("OverView").get("Paid Amount").trim());
-				outPutRow.createCell(6).setCellValue(overViewData.get("OverView").get("Paid Date").trim());
+//				outPutRow.createCell(5).setCellValue(overViewData.get("OverView").get("Paid Amount").trim());
+				outPutRow.createCell(5).setCellValue(overViewData.get("OverView").get("Paid Date").trim());
 //				outPutRow.createCell(7).setCellValue(wrap.gettext("Health First Claim Number").toString().trim());
 
-				outPutRow.createCell(7).setCellValue(EachRowclaimDetails.getValue().get(5).get("Total Charge"));
-				outPutRow.createCell(8).setCellValue(EachRowclaimDetails.getValue().get(10).get("Remark Code"));
-				outPutRow.createCell(9).setCellValue(EachRowclaimDetails.getValue().get(15).get("Paid Amount"));
+				outPutRow.createCell(6).setCellValue(EachRowclaimDetails.getValue().get(5).get("Total Charge"));
+				outPutRow.createCell(7).setCellValue(EachRowclaimDetails.getValue().get(10).get("Remark Code"));
+				outPutRow.createCell(8).setCellValue(EachRowclaimDetails.getValue().get(15).get("Paid Amount"));
 
-				if (legend) {
-					String eachLegend = String.join("," + "/n", legendData.get("Legends"));
+				if (StringConvertedLegendData.length() > 1) {
 					outPutSheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber, 10, 16));
-					outPutRow.createCell(10).setCellValue(eachLegend);
-					legend = false;
+					outPutRow.createCell(9).setCellValue(StringConvertedLegendData);
 
 				}
 				rowNumber++;
 			}
 		}
 
-		rowNumber++;
-		fileNameCount++;
+//		rowNumber++;
 	}
 
 	private void createHeadersForEmptyRecords() {
@@ -194,15 +194,15 @@ public class ExcelReadWrite extends WrapperClass {
 		outPutRow.createCell(2).setCellValue("CPT Code");
 		outPutRow.createCell(3).setCellValue("Claim Received Date");
 		outPutRow.createCell(4).setCellValue("Status");
-		outPutRow.createCell(5).setCellValue("Paid Amount");
-		outPutRow.createCell(6).setCellValue("Paid Date");
+//		outPutRow.createCell(5).setCellValue("Paid Amount");
+		outPutRow.createCell(5).setCellValue("Paid Date");
 //		outPutRow.createCell(7).setCellValue("Check/EFT/VCard #");
 
-		outPutRow.createCell(7).setCellValue("Total Charge");
-		outPutRow.createCell(8).setCellValue("Remark COde");
-		outPutRow.createCell(9).setCellValue("Paid Amount");
+		outPutRow.createCell(6).setCellValue("Total Charge");
+		outPutRow.createCell(7).setCellValue("Remark COde");
+		outPutRow.createCell(8).setCellValue("Paid Amount");
 		outPutSheet.addMergedRegion(new CellRangeAddress(0, 0, 10, 16));
-		outPutRow.createCell(10).setCellValue("Remark Code Description");
+		outPutRow.createCell(9).setCellValue("Remark Code Description");
 
 	}
 
@@ -211,7 +211,9 @@ public class ExcelReadWrite extends WrapperClass {
 	}
 
 	public void filOut() throws IOException {
-		FileOutputStream fileOut = new FileOutputStream(System.getProperty("user.dir") + "//OutPut File.xlsx");
+		String fileName = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+		FileOutputStream fileOut = new FileOutputStream(
+				System.getProperty("user.dir") + "//HealthFirst_OutPut_" + fileName + ".xlsx");
 		outPutworkBook.write(fileOut);
 		fileOut.close();
 	}
