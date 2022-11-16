@@ -18,7 +18,7 @@ public class HealthFirst extends WrapperClass {
 
 	private By useThis;
 	boolean flag = false;
-	int recordCount = 1;
+	int recordCount = 0;
 	int XpathNumberForclaim;
 	int claimCount;
 	String StringConvertedLegendData = null;
@@ -67,7 +67,7 @@ public class HealthFirst extends WrapperClass {
 
 			waitFor("Health First Claims search Page");
 
-			dataFromExcelWorkBook = excelReadWrite.extractData();
+			dataFromExcelWorkBook = excelReadWrite.extractData("ClaimsStatusCheckData");
 
 			for (Entry<String, Map<Integer, Map<String, String>>> eachSheet : dataFromExcelWorkBook.entrySet()) {
 
@@ -118,7 +118,7 @@ public class HealthFirst extends WrapperClass {
 							click("Health First Submit Button", useThis);
 //						datainitilization();
 							dataExtract();
-							System.out.println("COmpleted Records-> " + recordCount++);
+							System.out.println("COmpleted Records-> " + ++recordCount);
 							if (dataFromExcelWorkBook.get(sheetName).size() > 1) {
 								mouseHover("Health First Claims Search", useThis);
 
@@ -157,6 +157,7 @@ public class HealthFirst extends WrapperClass {
 				excelReadWrite.filOut();
 			}
 		} catch (Exception e) {
+
 			excelReadWrite.filOut();
 			e.printStackTrace();
 
@@ -203,6 +204,7 @@ public class HealthFirst extends WrapperClass {
 				String pagination[] = gettext("Health First Page").split(" ");
 				String pageNumber = pagination[pagination.length - 1];
 				for (int i = 0; i < Integer.parseInt(pageNumber); i++) {
+
 					if (XpathNumberForclaim == 12) {
 						scrollToElement("Health First Next Page");
 						click("Health First Next Page", useThis);
@@ -226,6 +228,7 @@ public class HealthFirst extends WrapperClass {
 											+ XpathNumberForclaim + "]/td[2]/a"));
 							scrollToElement(element);
 							element.click();
+
 						}
 						waitFor("Health First Claim Page ID");
 						otherDetails = new ArrayList<>();
@@ -259,7 +262,9 @@ public class HealthFirst extends WrapperClass {
 
 						if (numberOfclaims.size() > 1) {
 							click("Health First Back to Results", useThis);
+							Thread.sleep(3000);
 							waitFor("Health First New Search");
+
 							XpathNumberForclaim++;
 						}
 					}
@@ -306,8 +311,13 @@ public class HealthFirst extends WrapperClass {
 		legendData.put("Legends", allLegends);
 
 		String eachLegend = String.join("," + "/n", legendData.get("Legends"));
-		String[] splittedLegend = eachLegend.split(":");
-		return splittedLegend[1];
+		String[] splittedLegend = eachLegend.split("Remark Code Description:");
+		if (splittedLegend.length == 0) {
+			return "No Code";
+		} else {
+			return splittedLegend[1];
+		}
+
 	}
 
 	private String dataExtractedFromWebElement(String columnHeader, String valueHeader) {

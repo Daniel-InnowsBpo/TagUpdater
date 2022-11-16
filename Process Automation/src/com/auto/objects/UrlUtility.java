@@ -26,11 +26,11 @@ public class UrlUtility extends WrapperClass {
 		urlUtility.clickLoginButton("Health First Login Button");
 	}
 
-	public void caparioLogin(UrlUtility urlUtility) throws InterruptedException {
+	public void centersLabLogin(UrlUtility urlUtility) throws InterruptedException {
 
-		urlUtility.setUserName("Capario Username Box", "Capario Username");
-		urlUtility.setUserName("Capario Password Box", "Capario Password");
-		urlUtility.clickLoginButton("Capario Login Button");
+		urlUtility.setUserName("Centers Lab Username Box", "Centers Lab Username");
+		urlUtility.setUserName("Centers Lab Password Box", "Centers Lab Password");
+		urlUtility.clickLoginButton("Centers Lab  Login Button");
 	}
 
 	public void ChargeEntryLogin(UrlUtility urlUtility) throws InterruptedException {
@@ -44,7 +44,7 @@ public class UrlUtility extends WrapperClass {
 		System.out.println("OPENURL METHOD" + DataReader.getEachKeyandKeyValue(dataKey));
 		System.out.println(System.getProperty("user.dir"));
 		driver = new ChromeDriver();
-		waiting = new WebDriverWait(driver, 10);
+		waiting = new WebDriverWait(driver, 30);
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		driver.get(DataReader.getEachKeyandKeyValue(dataKey));

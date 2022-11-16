@@ -29,7 +29,7 @@ public class ExcelReadWrite extends WrapperClass {
 	Row row;
 	FileInputStream fis;
 	FileOutputStream fos;
-	String filePath = System.getProperty("user.dir") + "//ClaimStatusCheckData.xlsx";
+	String filePath = null;
 	WrapperClass wrap = new WrapperClass();
 
 	public XSSFWorkbook outPutworkBook = new XSSFWorkbook();
@@ -42,11 +42,11 @@ public class ExcelReadWrite extends WrapperClass {
 
 	Map<String, Map<Integer, Map<String, String>>> dataFromExcelWorkBook = new HashMap<>();
 
-	Map<Integer, Map<String, String>> childData = new HashMap<>();
+	Map<Integer, Map<String, String>> childData;
 
-	public Map<String, Map<Integer, Map<String, String>>> extractData() throws IOException {
+	public Map<String, Map<Integer, Map<String, String>>> extractData(String fileName) throws IOException {
 
-		fis = new FileInputStream(filePath);
+		fis = new FileInputStream(System.getProperty("user.dir") + "//" + fileName + ".xlsx");
 		workBook = new XSSFWorkbook(fis);
 		totalNumberOfSheets = workBook.getNumberOfSheets();
 		DataFormatter dataFormatter = new DataFormatter();
@@ -54,6 +54,7 @@ public class ExcelReadWrite extends WrapperClass {
 		for (int i = 0; i < totalNumberOfSheets; i++) {
 			sheet = workBook.getSheetAt(i);
 			int lastRowInSheet = sheet.getLastRowNum();
+			childData = new HashMap<>();
 			for (int j = 1; j <= lastRowInSheet; j++) {
 				Row row = sheet.getRow(j);
 				Map<String, String> excelData = new HashMap<>();
@@ -68,10 +69,35 @@ public class ExcelReadWrite extends WrapperClass {
 				}
 				childData.put(j, excelData);
 			}
+			dataFromExcelWorkBook.put(sheet.getSheetName(), childData);
 		}
-		dataFromExcelWorkBook.put(sheet.getSheetName(), childData);
+
 		fis.close();
 		return dataFromExcelWorkBook;
+	}
+
+	public void writeExcelForTagFinder(String fileName, Map<Integer, TagFinderWriteObject> excelWrite)
+			throws IOException {
+
+		sheet = workBook.getSheetAt(0);
+		int lastRownum = sheet.getLastRowNum();
+//		int lasColNum = sheet.getRow(0).getLastCellNum();
+		sheet.getRow(0).createCell(1).setCellValue("Initial Tags");
+		sheet.getRow(0).createCell(2).setCellValue("Tags Removed");
+		sheet.getRow(0).createCell(3).setCellValue("Tags Added");
+		sheet.getRow(0).createCell(4).setCellValue("Tag After Updation");
+
+		for (int i = 1; i <= lastRownum; i++) {
+			sheet.getRow(i).createCell(1).setCellValue(excelWrite.get(i).initialTags);
+			sheet.getRow(i).createCell(2).setCellValue(excelWrite.get(i).removedTags);
+			sheet.getRow(i).createCell(3).setCellValue(excelWrite.get(i).addedTags);
+			sheet.getRow(i).createCell(4).setCellValue(excelWrite.get(i).tagsAfterUpdation);
+
+		}
+		fis.close();
+		FileOutputStream fos = new FileOutputStream(System.getProperty("user.dir") + "//" + fileName + ".xlsx");
+		workBook.write(fos);
+		fos.close();
 	}
 
 	private void createOuputExcelSheet(String typeOfSheet) {
@@ -229,5 +255,9 @@ public class ExcelReadWrite extends WrapperClass {
 		outPutRow.createCell(2).setCellValue(dataFromExcelWorkBookForEmptyRecord.get(sheetNameForEmptyRecord)
 				.get(rowNumForEmptyRecord).get("Service Start Date"));
 		rowNumber++;
+	}
+
+	public static void tagUpdaterData() {
+
 	}
 }
