@@ -199,7 +199,7 @@ public class WrapperClass {
 	public void acceptAlert() {
 
 		try {
-			WebDriverWait waiting = new WebDriverWait(driver, 5);
+			WebDriverWait waiting = new WebDriverWait(driver, 3);
 			waiting.until(ExpectedConditions.alertIsPresent());
 			driver.switchTo().alert().accept();
 		} catch (Exception e) {
@@ -516,7 +516,7 @@ public class WrapperClass {
 
 	public void frameSwitch(int resultframe) {
 
-		WebDriverWait waiting = new WebDriverWait(driver, 5);
+		WebDriverWait waiting = new WebDriverWait(driver, 3);
 		waiting.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(resultframe));
 	}
 
@@ -529,7 +529,7 @@ public class WrapperClass {
 
 	public void waitForText(String dataSet, String sourceDataSet, By elementName) {
 
-		waiting = new WebDriverWait(driver, 5);
+		waiting = new WebDriverWait(driver, 3);
 		String attribute_attributeValue = DataReader.getAttributeandAttributevalue(dataSet);
 		elementName = AttributeFinder.attributefinder(elementName, attributeSplitter(attribute_attributeValue),
 				attributeValueSplitter(attribute_attributeValue));
@@ -649,7 +649,7 @@ public class WrapperClass {
 
 	public void waitForNow(String type, String value, String Text) {
 
-		WebDriverWait waiting = new WebDriverWait(driver, 5);
+		WebDriverWait waiting = new WebDriverWait(driver, 3);
 
 		try {
 			if (type.equalsIgnoreCase("Xpath")) {

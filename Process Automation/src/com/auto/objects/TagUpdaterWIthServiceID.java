@@ -14,7 +14,7 @@ import org.openqa.selenium.WebElement;
 import com.auto.Supports.DataReader;
 import com.auto.Supports.WrapperClass;
 
-public class TagUpdater extends WrapperClass {
+public class TagUpdaterWIthServiceID extends WrapperClass {
 	private By useThis;
 	Map<String, Map<Integer, Map<String, String>>> dataFromExcelWorkBook = new HashMap<>();
 	ExcelReadWrite excelReadWrite = new ExcelReadWrite();
@@ -28,7 +28,7 @@ public class TagUpdater extends WrapperClass {
 	Map<String, String> exportData = new HashMap<>();
 	Map<Integer, TagFinderWriteObject> dataToExcelWorkBook = new HashMap<>();
 
-	public TagUpdater() {
+	public TagUpdaterWIthServiceID() {
 		DataReader.getData("Centers Lab");
 		DataReader.getDataKeyandValue("Centers Lab");
 	}
@@ -76,13 +76,17 @@ public class TagUpdater extends WrapperClass {
 
 		click("Centers Lab Billing DropDown", useThis);
 		click("Centers Lab Billing Option", useThis);
-
 		emosowLoaderWait();
 		click("Centers Lab Billing Chechbox", useThis);
+		click("Centers Lab by service Check Box", useThis);
 		for (int i = 1; i <= dataFromExcelWorkBook.get("Sheet1").size(); i++) {
 
-			writeHere("Centers Lab Accession Number Box",
-					dataFromExcelWorkBook.get("Sheet1").get(i).get("A/N").toString(), useThis);
+//			writeHere("Centers Lab Accession Number Box",
+//					dataFromExcelWorkBook.get("Sheet1").get(i).get("A/N").toString(), useThis);
+
+			writeHere("Centers Lab Service ID Box",
+					dataFromExcelWorkBook.get("Sheet1").get(i).get("Service ID").toString(), useThis);
+
 			List<WebElement> searchButtons = findElements("Centers Lab Find Button");
 			emosowLoaderWait();
 			for (WebElement eachButton : searchButtons) {
@@ -121,38 +125,7 @@ public class TagUpdater extends WrapperClass {
 		}
 
 		int matchCount = 0;
-		/*
-		 * for (int j = 1; j <= dataFromExcelWorkBook.get("Sheet2").size(); j++) {
-		 * 
-		 * if (notes.isEmpty()) { /// add for empty notes matchedTags.add("askasas");
-		 * break; } else {
-		 * 
-		 * for (int k = 1; k <= dataFromExcelWorkBook.get("Sheet2").size(); k++) { if
-		 * (dataFromExcelWorkBook.get("Sheet2").get(k).get("Keyword").toLowerCase().trim
-		 * ().contains(",")) { String[] keywords =
-		 * dataFromExcelWorkBook.get("Sheet2").get(k).get("Keyword").toLowerCase()
-		 * .trim().split(","); for (String eachKey : keywords) { if
-		 * (notes.toLowerCase().contains(eachKey)) { matchCount++; } } if (matchCount ==
-		 * keywords.length) {
-		 * matchedTags.add(dataFromExcelWorkBook.get("Sheet2").get(k).get("Tags").trim()
-		 * ); break; } } else { continue; }
-		 * 
-		 * }
-		 * 
-		 * if (matchedTags.isEmpty() && notes.toLowerCase()
-		 * .contains(dataFromExcelWorkBook.get("Sheet2").get(j).get("Keyword").
-		 * toLowerCase().trim())) {
-		 * matchedTags.add(dataFromExcelWorkBook.get("Sheet2").get(j).get("Tags").trim()
-		 * ); break; }
-		 * 
-		 * } // else { // dataToExcelWorkBook.put(j, new
-		 * TagFinderWriteObject(initialTags, "", "", "")); ////
-		 * System.out.println("No Tags in Excel Sheet Matched for Comment->" + notes);
-		 * // } }
-		 */
 
-		// No Validation just goes on based on input from excel
-//		for (int j = 1; j <= dataFromExcelWorkBook.get("Sheet2").size(); j++) {
 		matchedTags.add(dataFromExcelWorkBook.get("Sheet2").get(i).get("Tags").trim());
 //		}
 		updateTags(matchedTags, notes, initialTags);

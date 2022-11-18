@@ -46,7 +46,7 @@ public class UrlUtility extends WrapperClass {
 		driver = new ChromeDriver();
 		waiting = new WebDriverWait(driver, 30);
 		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 		driver.get(DataReader.getEachKeyandKeyValue(dataKey));
 	}
 

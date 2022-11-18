@@ -16,6 +16,7 @@ import com.auto.objects.CentersLabEmsw;
 import com.auto.objects.ExcelReadWrite;
 import com.auto.objects.HealthFirst;
 import com.auto.objects.TagUpdater;
+import com.auto.objects.TagUpdaterWIthServiceID;
 import com.auto.objects.UrlUtility;
 
 public class AutomationCore extends WrapperClass {
@@ -25,6 +26,8 @@ public class AutomationCore extends WrapperClass {
 	public static CentersLabEmsw centersLab;
 
 	public static TagUpdater tagUpdater;
+
+	public static TagUpdaterWIthServiceID tagUpdaterWithServiceID;
 
 	public static ExcelReadWrite excelReadWrite;
 
@@ -77,7 +80,7 @@ public class AutomationCore extends WrapperClass {
 
 	}
 
-	@Test
+//	@Test
 	public void tagUpdater() throws IOException, InterruptedException {
 
 		try {
@@ -91,6 +94,28 @@ public class AutomationCore extends WrapperClass {
 			urlUtility.centersLabLogin(urlUtility);
 			tagUpdater = new TagUpdater();
 			tagUpdater.updateTag();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	@Test
+	public void tagUpdaterWithServiceID() throws IOException, InterruptedException {
+
+		try {
+			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+			urlUtility.openUrl("Centers Lab URL");
+//			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+//					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+
+			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(
+					By.xpath("//div[text()='Welcome to Shiny Triangle LCSW P.C. You need to logon to continue']"))));
+			urlUtility.centersLabLogin(urlUtility);
+			tagUpdaterWithServiceID = new TagUpdaterWIthServiceID();
+			tagUpdaterWithServiceID.updateTag();
 
 		} catch (Exception e) {
 
