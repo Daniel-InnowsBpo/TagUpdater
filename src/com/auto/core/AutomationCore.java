@@ -112,7 +112,7 @@ public class AutomationCore extends WrapperClass {
 //					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
 
 			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(
-					By.xpath("//div[text()='Welcome to Shiny Triangle LCSW P.C. You need to logon to continue']"))));
+					By.xpath("//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
 			urlUtility.centersLabLogin(urlUtility);
 			tagUpdaterWithServiceID = new TagUpdaterWIthServiceID();
 			tagUpdaterWithServiceID.updateTag();
