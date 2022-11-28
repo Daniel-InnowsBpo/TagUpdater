@@ -76,6 +76,19 @@ public class ExcelReadWrite extends WrapperClass {
 		return dataFromExcelWorkBook;
 	}
 
+	public void writeExcelForManualClose(Map<Integer, String> contentToWrite, String fileName) throws IOException {
+
+		sheet = workBook.getSheetAt(0);
+		int lastRownum = sheet.getLastRowNum();
+		sheet.getRow(0).createCell(1).setCellValue("Results");
+
+		for (int i = 1; i <= lastRownum; i++) {
+			sheet.getRow(i).createCell(1).setCellValue(contentToWrite.get(i));
+
+		}
+
+	}
+
 	public void writeExcelForTagFinder(String fileName, Map<Integer, TagFinderWriteObject> excelWrite)
 			throws IOException {
 

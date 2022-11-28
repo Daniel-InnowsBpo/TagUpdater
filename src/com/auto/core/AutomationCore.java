@@ -18,6 +18,7 @@ import com.auto.objects.HealthFirst;
 import com.auto.objects.TagUpdater;
 import com.auto.objects.TagUpdaterWIthServiceID;
 import com.auto.objects.UrlUtility;
+import com.auto.objects.WriteOffAndClose;
 
 public class AutomationCore extends WrapperClass {
 
@@ -28,6 +29,8 @@ public class AutomationCore extends WrapperClass {
 	public static TagUpdater tagUpdater;
 
 	public static TagUpdaterWIthServiceID tagUpdaterWithServiceID;
+
+	public static WriteOffAndClose writeOffAndClose;
 
 	public static ExcelReadWrite excelReadWrite;
 
@@ -102,7 +105,7 @@ public class AutomationCore extends WrapperClass {
 
 	}
 
-	@Test
+//	@Test
 	public void tagUpdaterWithServiceID() throws IOException, InterruptedException {
 
 		try {
@@ -111,11 +114,55 @@ public class AutomationCore extends WrapperClass {
 //			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
 //					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
 
-			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(
-					By.xpath("//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
 			urlUtility.centersLabLogin(urlUtility);
 			tagUpdaterWithServiceID = new TagUpdaterWIthServiceID();
 			tagUpdaterWithServiceID.updateTag();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+//	@Test
+	public void manualWriteOff() throws IOException, InterruptedException {
+
+		try {
+			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+			urlUtility.openUrl("Centers Lab URL");
+//			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+//					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+
+			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+			urlUtility.centersLabLogin(urlUtility);
+			writeOffAndClose = new WriteOffAndClose();
+			writeOffAndClose.ManualWriteOff();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	@Test
+	public void manualClose() throws IOException, InterruptedException {
+
+		try {
+			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+			urlUtility.openUrl("Centers Lab URL");
+//			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+//					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+
+			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+			urlUtility.centersLabLogin(urlUtility);
+			writeOffAndClose = new WriteOffAndClose();
+			writeOffAndClose.ManualCloseClaim();
 
 		} catch (Exception e) {
 

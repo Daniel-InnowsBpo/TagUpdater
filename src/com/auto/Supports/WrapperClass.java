@@ -84,6 +84,17 @@ public class WrapperClass {
 
 	}
 
+	public WebElement findElement(String dataSet) {
+		String attribute_attributeValue = DataReader.getAttributeandAttributevalue(dataSet);
+		String attribute = attributeSplitter(attribute_attributeValue);
+		String attributeValue = attributeValueSplitter(attribute_attributeValue);
+
+		waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(attributeValue))));
+		WebElement webElement = driver.findElement(By.xpath(attributeValue));
+		return webElement;
+
+	}
+
 	public List<WebElement> findElements(String dataSet) {
 		String attribute_attributeValue = DataReader.getAttributeandAttributevalue(dataSet);
 		String attribute = attributeSplitter(attribute_attributeValue);

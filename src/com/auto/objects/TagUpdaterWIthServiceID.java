@@ -19,7 +19,7 @@ public class TagUpdaterWIthServiceID extends WrapperClass {
 	Map<String, Map<Integer, Map<String, String>>> dataFromExcelWorkBook = new HashMap<>();
 	ExcelReadWrite excelReadWrite = new ExcelReadWrite();
 	TagFinderWriteObject tagWriteObject;
-	String servidId="";
+	String servidId = "";
 	ArrayList<String> removedTags = new ArrayList<>();
 	Set<String> alreadyAvailableTags = new HashSet<>();
 	Set<String> matchedTags = new HashSet<>();;
@@ -88,10 +88,10 @@ public class TagUpdaterWIthServiceID extends WrapperClass {
 			writeHere("Centers Lab Service ID Box",
 					dataFromExcelWorkBook.get("Sheet1").get(i).get("Service ID").toString(), useThis);
 
-			servidId=dataFromExcelWorkBook.get("Sheet1").get(i).get("Service ID").toString();
+			servidId = dataFromExcelWorkBook.get("Sheet1").get(i).get("Service ID").toString();
 			List<WebElement> searchButtons = findElements("Centers Lab Find Button");
 			emosowLoaderWait();
-			
+
 			for (WebElement eachButton : searchButtons) {
 				emosowLoaderWait();
 				eachButton.click();
@@ -110,7 +110,7 @@ public class TagUpdaterWIthServiceID extends WrapperClass {
 	private void readNotes(int i, Map<String, Map<Integer, Map<String, String>>> dataFromExcelWorkBook)
 			throws InterruptedException, IOException {
 //		String notes = "";
-		
+
 //		String notes = "Paid and alkajsdklasd Non-Covered";
 		String initialTags = "";
 //		List<WebElement> initialTagsAsElement=null;
@@ -131,12 +131,12 @@ public class TagUpdaterWIthServiceID extends WrapperClass {
 //		int matchCount = 0;
 
 		matchedTags.add(dataFromExcelWorkBook.get("Sheet2").get(i).get("Tags").trim());
-		
+
 //		}
 		click("Centers Lab Check Box", useThis);
 //		updateTags(matchedTags, notes, initialTags);
 		addTags(matchedTags);
-		System.out.println("Tag Completed for->"+servidId);
+		System.out.println("Tag Completed for->" + servidId);
 		dataToExcelWorkBook.put(i, new TagFinderWriteObject(initialTags, exportData.get("Tags Removed"),
 				exportData.get("Tags Added"), exportData.get("Tags After Updation")));
 		exportData.clear();
