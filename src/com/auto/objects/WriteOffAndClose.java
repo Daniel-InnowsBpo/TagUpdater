@@ -27,8 +27,8 @@ public class WriteOffAndClose extends WrapperClass {
 		DataReader.getDataKeyandValue("Centers Lab");
 	}
 
-	private void readExcelForInput() throws IOException {
-		dataFromExcelWorkBook = excelReadWrite.extractData("WriteOff");
+	private void readExcelForInput(String fileName) throws IOException {
+		dataFromExcelWorkBook = excelReadWrite.extractData(fileName);
 
 	}
 
@@ -168,7 +168,7 @@ public class WriteOffAndClose extends WrapperClass {
 			proCode = getProcCode(eachResult);
 			if (proCode.toLowerCase().contains("p") || proCode.toLowerCase().contains("g")) {
 				clickChecker(eachResult);
-				writeOff(scrollToDenialView(eachResult));
+				writeOff(scrollToDenialView(eachResult), "medicaid, G0471, P9603 not covered");
 				unselectRecord();
 //				click("Centers Lab Service Edit  button", useThis);
 //				click("Centers Lab Billing Edit Option", useThis);
@@ -214,14 +214,14 @@ public class WriteOffAndClose extends WrapperClass {
 		}
 	}
 
-	private void writeOff(WebElement denialText) throws InterruptedException {
+	private void writeOff(WebElement denialText, String tag) throws InterruptedException {
 		if (denialText.getText().toLowerCase().contains("denial")) {
 			Actions actions = new Actions(driver);
 			actions.moveToElement(denialText).perform();
 			Thread.sleep(500);
 			click("Centers Lab WriteOff Element", useThis);
 			emosowLoaderWait();
-			writeHere("Centers Lab Tag Input", "medicaid, G0471, P9603 not covered", useThis);
+			writeHere("Centers Lab Tag Input", tag, useThis);
 			Thread.sleep(2000);
 			buttonStroke_enterKey("Centers Lab Tag Input");
 			click("Centers Lab Ok Button", useThis);
@@ -355,9 +355,58 @@ public class WriteOffAndClose extends WrapperClass {
 
 	public void ManualWriteOff() throws IOException, InterruptedException {
 
-		readExcelForInput();
+		readExcelForInput("WriteOff");
 		clearTabs();
 		openClaimVerifyAndWriteOff(dataFromExcelWorkBook);
+
+	}
+
+	private void updateNotes(String dataForNotes) throws InterruptedException {
+		click("Centers Lab Service Edit  button", useThis);
+		click("Centers Billing Edit", useThis);
+		emosowLoaderWait();
+		click("CentersLab Notes Popup", useThis);
+		emosowLoaderWait();
+		click("Centers Comment Add Button", useThis);
+		emosowLoaderWait();
+		writeHere("CentersLab Linkto", "Service", useThis);
+		Thread.sleep(300);
+		buttonStroke_enterKey("CentersLab Linkto");
+		Thread.sleep(200);
+		writeHere("Centers Lab Comment Area", dataForNotes, useThis);
+		click("Centers Lab Save Button", useThis);
+		emosowLoaderWait();
+
+	}
+
+	private void writeOffViaOperations(String tag) throws InterruptedException {
+		click("Centers Lab Operations Option", useThis);
+		click("Centers Lab WriteOff Option", useThis);
+		emosowLoaderWait();
+		writeHere("Centers Lab Tag Input", tag, useThis);
+		Thread.sleep(300);
+		buttonStroke_enterKey("Centers Lab Tag Input");
+		Thread.sleep(200);
+		click("Centers Lab Ok Button", useThis);
+		emosowLoaderWait();
+		click("Centers Lab Close Button", useThis);
+		emosowLoaderWait();
+	}
+
+	private void searchRecord(Map<String, String> dataForSearch, String searchBasedOn) throws InterruptedException {
+
+		if (searchBasedOn.toLowerCase().equalsIgnoreCase("accession")) {
+
+			writeHere("Centers Lab Accession Number Box", dataForSearch.get("A/N").toString(), useThis);
+
+			click("Centers Lab Find Button", useThis);
+			emosowLoaderWait();
+			List<WebElement> searchResults = findElements("Centers Lab Claim Search Results");
+			for (WebElement eachResult : searchResults) {
+				clickChecker(eachResult);
+				return;
+			}
+		}
 
 	}
 
@@ -367,5 +416,23 @@ public class WriteOffAndClose extends WrapperClass {
 		clearTabs();
 		openClaimVerifyAndClose(dataFromExcelWorkBook);
 		writeBackToExcel(outPutForExcel, "Close");
+	}
+
+	public void updateNotesAndWriteOff() throws IOException, InterruptedException {
+		readExcelForInput("UpdateNotesAndWriteOff");
+		clearTabs();
+		click("Centers Lab Billing DropDown", useThis);
+		click("Centers Lab Billing Option", useThis);
+		emosowLoaderWait();
+		if (ischeckBoxChecked(findElement("Centers Lab by service Check Box"))) {
+			click("Centers Lab by service Check Box", useThis);
+		}
+		for (int i = 1; i <= dataFromExcelWorkBook.get("Sheet1").size(); i++) {
+			searchRecord(dataFromExcelWorkBook.get("Sheet1").get(i), "Accession");
+			updateNotes(dataFromExcelWorkBook.get("Sheet1").get(i).get("Notes"));
+			writeOffViaOperations(dataFromExcelWorkBook.get("Sheet1").get(i).get("Tag"));
+			unselectRecord();
+		}
+
 	}
 }

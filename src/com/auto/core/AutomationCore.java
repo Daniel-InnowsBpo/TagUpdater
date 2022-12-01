@@ -149,7 +149,7 @@ public class AutomationCore extends WrapperClass {
 
 	}
 
-	@Test
+//	@Test
 	public void manualClose() throws IOException, InterruptedException {
 
 		try {
@@ -163,6 +163,28 @@ public class AutomationCore extends WrapperClass {
 			urlUtility.centersLabLogin(urlUtility);
 			writeOffAndClose = new WriteOffAndClose();
 			writeOffAndClose.ManualCloseClaim();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	@Test
+	public void manualWriteOffWithComment() throws IOException, InterruptedException {
+
+		try {
+			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+			urlUtility.openUrl("Centers Lab URL");
+//			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+//					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+
+			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+			urlUtility.centersLabLogin(urlUtility);
+			writeOffAndClose = new WriteOffAndClose();
+			writeOffAndClose.updateNotesAndWriteOff();
 
 		} catch (Exception e) {
 
