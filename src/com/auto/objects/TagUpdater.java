@@ -320,6 +320,7 @@ public class TagUpdater extends WrapperClass {
 	private List<String> readTags() {
 
 		String initialTag = "";
+		String[] allInitialTags = {};
 		List<WebElement> initialTagsAsElement;
 		List<String> tagsAvailable = new ArrayList<>();
 
@@ -330,9 +331,13 @@ public class TagUpdater extends WrapperClass {
 				initialTag = "NA";
 			} else {
 				String tag = "Tags:";
-				initialTag = initialTag.substring(initialTag.indexOf("Tags:") + tag.length()).trim();
-				tagsAvailable.add(initialTag);
+				allInitialTags = initialTag.substring(initialTag.indexOf("Tags:") + tag.length()).trim().split(",");
+
 			}
+		}
+
+		for (String tags : allInitialTags) {
+			tagsAvailable.add(tags);
 		}
 		return tagsAvailable;
 
@@ -341,8 +346,13 @@ public class TagUpdater extends WrapperClass {
 	private boolean verifyTagAvailable(String tagName) {
 		boolean isTagAvailable = false;
 		List<String> tags = readTags();
-		if (tags.contains(tagName)) {
-			isTagAvailable = true;
+		for (String eachtag : tags) {
+			System.out.println(tags.size());
+			System.out.println(eachtag);
+			if (eachtag.trim().equalsIgnoreCase(tagName)) {
+				isTagAvailable = true;
+				break;
+			}
 		}
 		return isTagAvailable;
 	}
@@ -415,8 +425,9 @@ public class TagUpdater extends WrapperClass {
 
 	private boolean isSameDxAvailable(int i) throws InterruptedException {
 		boolean isSameDxAvailable = false;
+		Thread.sleep(2500);
 		List<WebElement> dxAvailable = findElements("Centers Lab Available Dx");
-		Thread.sleep(1500);
+
 		for (WebElement dx : dxAvailable) {
 			String eachdx = dx.getText().toString().trim();
 			if (eachdx.equalsIgnoreCase(
