@@ -2,24 +2,24 @@
 <testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2022-12-01T18:35:02 IST" name="Default suite" finished-at="2022-12-01T18:36:40 IST" duration-ms="97299">
+  <suite started-at="2022-12-07T17:09:31 IST" name="Default suite" finished-at="2022-12-07T17:10:39 IST" duration-ms="68207">
     <groups>
     </groups>
-    <test started-at="2022-12-01T18:35:02 IST" name="Default test" finished-at="2022-12-01T18:36:40 IST" duration-ms="97299">
+    <test started-at="2022-12-07T17:09:31 IST" name="Default test" finished-at="2022-12-07T17:10:39 IST" duration-ms="68207">
       <class name="com.auto.core.AutomationCore">
-        <test-method is-config="true" signature="openWhatsapp()[pri:0, instance:com.auto.core.AutomationCore@35aea049]" started-at="2022-12-01T18:35:02 IST" name="openWhatsapp" finished-at="2022-12-01T18:35:03 IST" duration-ms="617" status="PASS">
+        <test-method is-config="true" signature="openWhatsapp()[pri:0, instance:com.auto.core.AutomationCore@611889f4]" started-at="2022-12-07T17:09:31 IST" name="openWhatsapp" finished-at="2022-12-07T17:09:32 IST" duration-ms="621" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- openWhatsapp -->
-        <test-method is-config="true" signature="f()[pri:0, instance:com.auto.core.AutomationCore@35aea049]" started-at="2022-12-01T18:35:03 IST" name="f" finished-at="2022-12-01T18:35:03 IST" duration-ms="1" status="PASS">
+        <test-method is-config="true" signature="f()[pri:0, instance:com.auto.core.AutomationCore@611889f4]" started-at="2022-12-07T17:09:32 IST" name="f" finished-at="2022-12-07T17:09:32 IST" duration-ms="1" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- f -->
-        <test-method signature="manualWriteOffWithComment()[pri:0, instance:com.auto.core.AutomationCore@35aea049]" started-at="2022-12-01T18:35:03 IST" name="manualWriteOffWithComment" finished-at="2022-12-01T18:36:39 IST" duration-ms="96295" status="PASS">
+        <test-method signature="DxAddAndRemoveTag()[pri:0, instance:com.auto.core.AutomationCore@611889f4]" started-at="2022-12-07T17:09:32 IST" name="DxAddAndRemoveTag" finished-at="2022-12-07T17:10:39 IST" duration-ms="67080" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- manualWriteOffWithComment -->
-        <test-method is-config="true" signature="closeBrowers()[pri:0, instance:com.auto.core.AutomationCore@35aea049]" started-at="2022-12-01T18:36:39 IST" name="closeBrowers" finished-at="2022-12-01T18:36:40 IST" duration-ms="332" status="PASS">
+        </test-method> <!-- DxAddAndRemoveTag -->
+        <test-method is-config="true" signature="closeBrowers()[pri:0, instance:com.auto.core.AutomationCore@611889f4]" started-at="2022-12-07T17:10:39 IST" name="closeBrowers" finished-at="2022-12-07T17:10:39 IST" duration-ms="460" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- closeBrowers -->

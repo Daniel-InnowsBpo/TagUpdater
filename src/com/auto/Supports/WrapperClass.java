@@ -15,6 +15,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -202,7 +203,7 @@ public class WrapperClass {
 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
 	}
 
-	public void scrollToElement(WebElement element) {
+	public void scrollToElement(WebElement element) throws StaleElementReferenceException {
 
 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
 	}
@@ -525,6 +526,16 @@ public class WrapperClass {
 		}
 	}
 
+	public void loaderWait(String xpath) {
+		List<WebElement> loader = driver.findElements(By.xpath(xpath));
+		while (!(loader.isEmpty())) {
+			loader = driver.findElements(By.xpath(xpath));
+			if (loader.isEmpty()) {
+				break;
+			}
+		}
+	}
+
 	public void frameSwitch(int resultframe) {
 
 		WebDriverWait waiting = new WebDriverWait(driver, 3);
@@ -596,6 +607,28 @@ public class WrapperClass {
 			filePath = "<a target='_blank' href=\"" + filePath + "\"><img src=\"" + filePath + "\" "
 					+ "style='width:150px'></a>";
 			System.out.println("final path---" + filePath);
+		} catch (WebDriverException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("Error while saving screenshot" + e.toString());
+		}
+	}
+
+	public void screenshot(String filename, String filetype, String isBook) {
+
+		try {
+			File pic = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+			File screenShot = new File(System.getProperty("user.dir") + File.separator + "Book" + File.separator
+					+ filename + "." + filetype);
+			FileUtils.copyFile(pic, screenShot);
+			filePath = screenShot.toString();
+			System.out.println(filePath);
+			// filePath=filePath.replaceAll(" ", "%20")
+
 		} catch (WebDriverException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

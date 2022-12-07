@@ -15,6 +15,7 @@ import com.auto.Supports.WrapperClass;
 import com.auto.objects.CentersLabEmsw;
 import com.auto.objects.ExcelReadWrite;
 import com.auto.objects.HealthFirst;
+import com.auto.objects.ScreenCapture;
 import com.auto.objects.TagUpdater;
 import com.auto.objects.TagUpdaterWIthServiceID;
 import com.auto.objects.UrlUtility;
@@ -31,6 +32,8 @@ public class AutomationCore extends WrapperClass {
 	public static TagUpdaterWIthServiceID tagUpdaterWithServiceID;
 
 	public static WriteOffAndClose writeOffAndClose;
+
+	public static ScreenCapture screenCapture;
 
 	public static ExcelReadWrite excelReadWrite;
 
@@ -171,9 +174,8 @@ public class AutomationCore extends WrapperClass {
 
 	}
 
-	@Test
-	public void manualWriteOffWithComment() throws IOException, InterruptedException {
-
+//	@Test
+	public void manualWriteOffWithComment() {
 		try {
 			UrlUtility urlUtility = new UrlUtility("Centers Lab");
 			urlUtility.openUrl("Centers Lab URL");
@@ -185,6 +187,44 @@ public class AutomationCore extends WrapperClass {
 			urlUtility.centersLabLogin(urlUtility);
 			writeOffAndClose = new WriteOffAndClose();
 			writeOffAndClose.updateNotesAndWriteOff();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+	}
+
+//	@Test
+	public void screenCapturing() throws IOException, InterruptedException {
+
+		try {
+			UrlUtility urlUtility = new UrlUtility("Amazon");
+			urlUtility.openUrl("Amazon URL");
+			urlUtility.kindleLogin(urlUtility);
+			screenCapture = new ScreenCapture();
+			screenCapture.screenCapturingBook();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	@Test
+	public void DxAddAndRemoveTag() throws IOException, InterruptedException {
+
+		try {
+			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+			urlUtility.openUrl("Centers Lab URL");
+//			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+//					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+
+			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+			urlUtility.centersLabLogin(urlUtility);
+			tagUpdater = new TagUpdater();
+			tagUpdater.diagnosisAddAndRemoveTags();
 
 		} catch (Exception e) {
 

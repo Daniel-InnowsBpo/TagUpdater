@@ -52,6 +52,16 @@ public class TagUpdater extends WrapperClass {
 		}
 	}
 
+	private void processingLoaderWait() {
+		List<WebElement> loader = driver.findElements(By.xpath("//div[text()='Processing...']"));
+		while (!(loader.isEmpty())) {
+			loader = driver.findElements(By.xpath("//div[text()='Processing...']"));
+			if (loader.isEmpty()) {
+				break;
+			}
+		}
+	}
+
 	private void clearTabs() throws InterruptedException, IOException {
 
 		List<WebElement> closableTabs = driver
@@ -175,6 +185,11 @@ public class TagUpdater extends WrapperClass {
 
 	}
 
+	private void readExcelForInput(String fileName) throws IOException {
+		dataFromExcelWorkBook = excelReadWrite.extractData(fileName);
+
+	}
+
 	private void writeExcelForTagFinder() throws IOException {
 
 		excelReadWrite.writeExcelForTagFinder("TagUpdater", dataToExcelWorkBook);
@@ -277,5 +292,156 @@ public class TagUpdater extends WrapperClass {
 		}
 
 		exportData.put("Tags After Updation", tagsAfterUpdation.toString().replace("[", "").replace("]", ""));
+	}
+
+	private int openClaim() throws InterruptedException {
+		int currentRowNumber = 0;
+		click("Centers Lab Billing DropDown", useThis);
+		click("Centers Lab Billing Option", useThis);
+
+		emosowLoaderWait();
+		click("Centers Lab Billing Chechbox", useThis);
+		for (int i = 1; i <= dataFromExcelWorkBook.get("Sheet1").size(); i++) {
+
+			writeHere("Centers Lab Accession Number Box",
+					dataFromExcelWorkBook.get("Sheet1").get(i).get("A/N").toString(), useThis);
+			click("Centers Lab Find Button", useThis);
+			emosowLoaderWait();
+			currentRowNumber = i;
+
+			addDxForSearchResults(i);
+			System.out.println("Completed->" + dataFromExcelWorkBook.get("Sheet1").get(i).get("A/N"));
+
+		}
+		return currentRowNumber;
+
+	}
+
+	private List<String> readTags() {
+
+		String initialTag = "";
+		List<WebElement> initialTagsAsElement;
+		List<String> tagsAvailable = new ArrayList<>();
+
+		initialTagsAsElement = driver.findElements(By.xpath("//div[span[normalize-space(text())='Tags:']]"));
+		for (WebElement tagEle : initialTagsAsElement) {
+			initialTag = tagEle.getText();
+			if (initialTag.isEmpty() || initialTag.isBlank()) {
+				initialTag = "NA";
+			} else {
+				String tag = "Tags:";
+				initialTag = initialTag.substring(initialTag.indexOf("Tags:") + tag.length()).trim();
+				tagsAvailable.add(initialTag);
+			}
+		}
+		return tagsAvailable;
+
+	}
+
+	private boolean verifyTagAvailable(String tagName) {
+		boolean isTagAvailable = false;
+		List<String> tags = readTags();
+		if (tags.contains(tagName)) {
+			isTagAvailable = true;
+		}
+		return isTagAvailable;
+	}
+
+	private void removeTags(String tagToBeRemoved) throws InterruptedException {
+		click("Centers Lab Service Edit  button", useThis);
+		click("Centers Lab Tag Edit", useThis);
+		emosowLoaderWait();
+		click("Centers Lab Remove Tags", useThis);
+		writeHere("Centers Lab Tags Edit", tagToBeRemoved.trim(), useThis);
+		Thread.sleep(2000);
+		buttonStroke_enterKey("Centers Lab Tags Edit");
+		click("Centers Lab Tag Apply", useThis);
+		emosowLoaderWait();
+	}
+
+	public void diagnosisAddAndRemoveTags() throws IOException, InterruptedException {
+		int currentRowNumber;
+
+		readExcelForInput("AddDx");
+		clearTabs();
+		currentRowNumber = openClaim();
+
+	}
+
+	private void clickChecker(WebElement eachResult) {
+		List<WebElement> allDivElementInsideResult = eachResult.findElements(By.tagName("div"));
+		for (WebElement eachDivElement : allDivElementInsideResult) {
+			if (eachDivElement.getAttribute("class").contains("row-checker")) {
+				eachDivElement.click();
+				break;
+			}
+		}
+	}
+
+	private void unselectRecord() {
+		List<WebElement> searchResults = findElements("Centers Lab Selected Result");
+		outer: for (WebElement eachResult : searchResults) {
+			List<WebElement> allDivElementInsideResult = eachResult.findElements(By.tagName("div"));
+			for (WebElement eachDivElement : allDivElementInsideResult) {
+				if (eachDivElement.getAttribute("class").contains("row-checker")) {
+					eachDivElement.click();
+					break outer;
+				}
+			}
+		}
+
+	}
+
+	private void addDx(int i) throws InterruptedException {
+		click("Centers Lab Dignosis Link", useThis);
+		if (!isSameDxAvailable(i)) {
+			emosowLoaderWait();
+			writeHere("Centers Lab Diagnosis input",
+					dataFromExcelWorkBook.get("Sheet1").get(i).get("HL7 diagnosis сode").toString().trim(), useThis);
+			Thread.sleep(2500);
+			buttonStroke_enterKey("Centers Lab Diagnosis input");
+			click("Centers Lab Diagnosis Save Button", useThis);
+			processingLoaderWait();
+			emosowLoaderWait();
+			Thread.sleep(500);
+		} else {
+			click("Centers Lab Diagnosis Save Button", useThis);
+			processingLoaderWait();
+			emosowLoaderWait();
+			Thread.sleep(500);
+		}
+
+	}
+
+	private boolean isSameDxAvailable(int i) throws InterruptedException {
+		boolean isSameDxAvailable = false;
+		List<WebElement> dxAvailable = findElements("Centers Lab Available Dx");
+		Thread.sleep(1500);
+		for (WebElement dx : dxAvailable) {
+			String eachdx = dx.getText().toString().trim();
+			if (eachdx.equalsIgnoreCase(
+					dataFromExcelWorkBook.get("Sheet1").get(i).get("HL7 diagnosis сode").toString().trim())) {
+				isSameDxAvailable = true;
+				break;
+			}
+		}
+
+		return isSameDxAvailable;
+
+	}
+
+	private void addDxForSearchResults(int i) throws InterruptedException {
+		List<WebElement> searchResults = findElements("Centers Lab Claim Search Results");
+		for (WebElement eachResult : searchResults) {
+			clickChecker(eachResult);
+			if (verifyTagAvailable("missing/invalid dx code")) {
+				removeTags("missing/invalid dx code");
+			}
+			addDx(i);
+
+			unselectRecord();
+			emosowLoaderWait();
+		}
+
 	}
 }

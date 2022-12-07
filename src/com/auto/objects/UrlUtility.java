@@ -40,6 +40,13 @@ public class UrlUtility extends WrapperClass {
 		urlUtility.clickLoginButton("Charge  Login Button");
 	}
 
+	public void kindleLogin(UrlUtility urlUtility) throws InterruptedException {
+
+		urlUtility.setUserName("Amazon Username Box", "Amazon Username");
+		urlUtility.setUserName("Amazon Password Box", "Amazon Password");
+		urlUtility.clickLoginButton("Amazon Login Button");
+	}
+
 	public void openUrl(String dataKey) {
 		System.out.println("OPENURL METHOD" + DataReader.getEachKeyandKeyValue(dataKey));
 		System.out.println(System.getProperty("user.dir"));

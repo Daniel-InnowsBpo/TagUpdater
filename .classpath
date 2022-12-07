@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="C:/Users/Innovativedell/git/repository/jars/selenium-server-standalone-3.141.59.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Innovativedell/git/repository/jars/testng-6.14.3.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Innovativedell/git/repository/jars/xmlbeans-3.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Innovativedell/Downloads/jar_files/staedi-1.22.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
