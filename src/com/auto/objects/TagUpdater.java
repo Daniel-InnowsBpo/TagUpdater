@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,10 +43,21 @@ public class TagUpdater extends WrapperClass {
 
 	}
 
-	private void emosowLoaderWait() {
+	public void emosowLoaderWait() {
 		List<WebElement> loader = driver.findElements(By.xpath("//div[text()='Loading...']"));
 		while (!(loader.isEmpty())) {
 			loader = driver.findElements(By.xpath("//div[text()='Loading...']"));
+			if (loader.isEmpty()) {
+				break;
+			}
+		}
+	}
+
+	public void emsowLoggingInWait() {
+		List<WebElement> loader = driver
+				.findElements(By.xpath("//div[span='Logging on...' and @style='visibility: hidden;']"));
+		while (!(loader.isEmpty())) {
+			loader = driver.findElements(By.xpath("//div[span='Logging on...' and @style='visibility: hidden;']"));
 			if (loader.isEmpty()) {
 				break;
 			}
@@ -63,7 +75,7 @@ public class TagUpdater extends WrapperClass {
 	}
 
 	private void clearTabs() throws InterruptedException, IOException {
-
+		emosowLoaderWait();
 		List<WebElement> closableTabs = driver
 				.findElements(By.xpath("//div[normalize-space(@class)='x-tab-panel tab-close-button x-border-panel']"
 						+ "/div[1]/div/ul/li[contains(@class,'x-tab-strip-closable')]"));
@@ -78,6 +90,7 @@ public class TagUpdater extends WrapperClass {
 			}
 			Thread.sleep(3000);
 		}
+		emosowLoaderWait();
 
 	}
 
@@ -317,6 +330,33 @@ public class TagUpdater extends WrapperClass {
 
 	}
 
+	private void openBillingModule() {
+
+		click("Centers Lab Billing DropDown", useThis);
+		click("Centers Lab Billing Option", useThis);
+
+		emosowLoaderWait();
+	}
+
+	private void openClaimByServiceId(String data) throws InterruptedException {
+
+		writeHere("Centers Lab Service ID Box", data, useThis);
+		Thread.sleep(700);
+		click("Centers Lab Find Button", useThis);
+		emosowLoaderWait();
+
+	}
+
+	private List<String> readTagsForSelectedRows() {
+
+		List<WebElement> allResults = findElements("Centers Lab Selected Result");
+		for (WebElement eachResult : allResults) {
+
+		}
+		return removedTags;
+
+	}
+
 	private List<String> readTags() {
 
 		String initialTag = "";
@@ -343,9 +383,59 @@ public class TagUpdater extends WrapperClass {
 
 	}
 
+	private List<String> readTags(WebElement selectedRecord) {
+
+		String initialTag = "";
+		String[] allInitialTags = {};
+		List<WebElement> initialTagsAsElement;
+		List<String> tagsAvailable = new ArrayList<>();
+
+		List<WebElement> allDivisions = selectedRecord.findElements(By.tagName("td"));
+		outer: for (WebElement eachDivision : allDivisions) {
+			if (eachDivision.getAttribute("class").contains("notes")) {
+				List<WebElement> allSpans = eachDivision.findElements(By.tagName("span"));
+				for (WebElement eachSpan : allSpans) {
+					if (eachSpan.getText().contains("Tags:")) {
+						initialTag = eachDivision.getText().trim();
+						break outer;
+
+					}
+				}
+			}
+		}
+
+		if (initialTag.isEmpty() || initialTag.isBlank()) {
+			initialTag = "NA";
+		} else {
+			String tag = "Tags:";
+			allInitialTags = initialTag.substring(initialTag.indexOf("Tags:") + tag.length()).trim().split(",");
+
+		}
+
+		for (String tags : allInitialTags) {
+			tagsAvailable.add(tags);
+		}
+		return tagsAvailable;
+
+	}
+
 	private boolean verifyTagAvailable(String tagName) {
 		boolean isTagAvailable = false;
 		List<String> tags = readTags();
+		for (String eachtag : tags) {
+			System.out.println(tags.size());
+			System.out.println(eachtag);
+			if (eachtag.trim().equalsIgnoreCase(tagName)) {
+				isTagAvailable = true;
+				break;
+			}
+		}
+		return isTagAvailable;
+	}
+
+	private boolean verifyTagAvailable(String tagName, WebElement selectedRecord) {
+		boolean isTagAvailable = false;
+		List<String> tags = readTags(selectedRecord);
 		for (String eachtag : tags) {
 			System.out.println(tags.size());
 			System.out.println(eachtag);
@@ -366,6 +456,18 @@ public class TagUpdater extends WrapperClass {
 		Thread.sleep(2000);
 		buttonStroke_enterKey("Centers Lab Tags Edit");
 		click("Centers Lab Tag Apply", useThis);
+		emosowLoaderWait();
+	}
+
+	private void addTag(String tagTobeAdded) throws InterruptedException {
+		click("Centers Lab Service Edit  button", useThis);
+		click("Centers Lab Tag Edit", useThis);
+		emosowLoaderWait();
+		writeHere("Centers Lab Tags Edit", tagTobeAdded.trim(), useThis);
+		Thread.sleep(2000);
+		buttonStroke_enterKey("Centers Lab Tags Edit");
+		click("Centers Lab Tag Apply", useThis);
+		processingLoaderWait();
 		emosowLoaderWait();
 	}
 
@@ -455,4 +557,173 @@ public class TagUpdater extends WrapperClass {
 		}
 
 	}
+
+	public Map<String, Set<String>> readExcelForCollectiveTagUpdate() throws IOException {
+		readExcelForInput("MissingDx");
+		int dataWise = 1;
+		Map<String, Set<String>> collectiveData = new HashMap<>();
+
+		Set<String> collectiveStudies = new LinkedHashSet<>();
+//		Map<Integer, Set<String>> orderedCollectiveData = new HashMap<>();
+		for (int i = 1; i <= dataFromExcelWorkBook.get("Sheet1").size(); i++) {
+			inner: for (int j = i; j < dataFromExcelWorkBook.get("Sheet1").size(); j++) {
+				if (dataFromExcelWorkBook.get("Sheet1").get(j).get("Service ID")
+						.equals(dataFromExcelWorkBook.get("Sheet1").get(j + 1).get("Service ID"))) {
+					collectiveStudies.add(dataFromExcelWorkBook.get("Sheet1").get(j).get("Study short name"));
+//					orderedCollectiveData.put(dataWise, collectiveStudies);
+//					collectiveStudies = new LinkedHashSet<>();
+//					dataWise++;
+				} else {
+					collectiveStudies.add(dataFromExcelWorkBook.get("Sheet1").get(j).get("Study short name"));
+//					orderedCollectiveData.put(dataWise, collectiveStudies);
+//					collectiveStudies = new LinkedHashSet<>();
+//					dataWise++;
+					i = j;
+
+					collectiveData.put(dataFromExcelWorkBook.get("Sheet1").get(j).get("Service ID"), collectiveStudies);
+//					orderedCollectiveData = new HashMap<>();
+					collectiveStudies = new LinkedHashSet<>();
+					dataWise = 1;
+					break inner;
+				}
+			}
+
+		}
+		System.out.println(collectiveData);
+		return collectiveData;
+
+	}
+
+	public void collectiveTagUpdate() throws IOException, InterruptedException {
+		Map<String, Set<String>> collectiveData = new HashMap<>();
+		collectiveData = readExcelForCollectiveTagUpdate();
+		clearTabs();
+		openBillingModule();
+		for (String serviceId : collectiveData.keySet()) {
+			openClaimByServiceId(serviceId);
+//			click("Centers Lab CheckAll CheckBox", useThis);
+			Thread.sleep(700);
+			selectCollective(collectiveData.get(serviceId));
+			List<WebElement> selectedRecords = findElements("Centers Lab Selected Result");
+			for (WebElement eachRecord : selectedRecords) {
+				if (!verifyTagAvailable("Dx removed by filter and added back from HL7", eachRecord)) {
+					addTag("Dx removed by filter and added back from HL7");
+					break;
+				}
+			}
+
+		}
+	}
+
+	public void addCPtAndDx() throws InterruptedException, IOException {
+
+		readExcelForInput("AddCPTDx");
+		clearTabs();
+		openBillingModule();
+		click("Centers Lab Billing Chechbox", useThis);
+		for (int i = 1; i < dataFromExcelWorkBook.get("Sheet1").size(); i++) {
+			openClaimByServiceId(dataFromExcelWorkBook.get("Sheet1").get(i).get("Service ID"));
+			click("Centers Lab CheckAll CheckBox", useThis);
+			openServiceEdit();
+			addCPTdx(i);
+		}
+
+	}
+
+	private void openServiceEdit() {
+		emosowLoaderWait();
+		click("Centers Lab Service Edit  button", useThis);
+		click("Centers Lab Service Edit Open ", useThis);
+		emosowLoaderWait();
+		emosowLoaderWait();
+
+	}
+
+	private void addCPTdx(int i) throws InterruptedException {
+		List<WebElement> availablestudies = findElements("Centers lab Number of studies");
+		int numberOfStudiesPresent = availablestudies.size();
+		click("Centers Lab Add Study", useThis);
+		newElementWait(
+				"//span[text()='Studies']/ancestor::fieldset//div[@class='app-multifield-body']/div[@class='app-multifield-row']["
+						+ numberOfStudiesPresent++ + "]");
+
+		driver.findElement(By.xpath(
+				"//span[text()='Studies']/ancestor::fieldset//div[@class='app-multifield-body']/div[@class='app-multifield-row']["
+						+ numberOfStudiesPresent + "]/div[3]//input"))
+				.sendKeys(dataFromExcelWorkBook.get("Sheet1").get(i).get("Study").trim());
+
+//		writeHere("Centers Lab Study Box", dataFromExcelWorkBook.get("Sheet1").get(i).get("Study"), useThis);
+		Thread.sleep(2000);
+		buttonStroke_enterKeyWithXpath(
+				"//span[text()='Studies']/ancestor::fieldset//div[@class='app-multifield-body']/div[@class='app-multifield-row']["
+						+ numberOfStudiesPresent + "]/div[3]//input");
+
+		driver.findElement(By.xpath(
+				"// span[text()='Studies']/ancestor::fieldset//div[@class='app-multifield-body']/div[@class='app-multifield-row']["
+						+ numberOfStudiesPresent + "]/div[7]/div/div//input"))
+				.sendKeys(dataFromExcelWorkBook.get("Sheet1").get(i).get("Diagnosis").trim());
+//		writeHere("Centers Lab Diagnosis Box", dataFromExcelWorkBook.get("Sheet1").get(i).get("Diagnosis"), useThis);
+		Thread.sleep(800);
+		buttonStroke_SpaceKeyWithXpath(
+				"// span[text()='Studies']/ancestor::fieldset//div[@class='app-multifield-body']/div[@class='app-multifield-row']["
+						+ numberOfStudiesPresent + "]/div[7]/div/div//input");
+		Thread.sleep(2500);
+		buttonStroke_enterKeyWithXpath(
+				"// span[text()='Studies']/ancestor::fieldset//div[@class='app-multifield-body']/div[@class='app-multifield-row']["
+						+ numberOfStudiesPresent + "]/div[7]/div/div//input");
+		click("Centers Lab Service Save Button", useThis);
+		emosowLoaderWait();
+		emosowLoaderWait();
+	}
+
+	private void newElementWait(String xpathOfExpectedElement) {
+		System.out.println(xpathOfExpectedElement);
+		List<WebElement> loader = driver.findElements(By.xpath(xpathOfExpectedElement));
+		while ((loader.isEmpty())) {
+			loader = driver.findElements(By.xpath(xpathOfExpectedElement));
+			if (!loader.isEmpty()) {
+				break;
+			}
+		}
+	}
+
+	private void selectCollective(Set<String> data) {
+		String study = "";
+		for (String eachData : data) {
+//			List<WebElement> searchResults = driver.findElements(By.xpath(
+//					"//div[@class='x-panel-tbar']/following::div[contains(@class,'x-grid3-row') and not(contains(@class,'checker'))]//td[contains(@class,'study')]//div[@class='text-center']/span"));
+
+			List<WebElement> searchResults = driver.findElements(By.xpath(
+					"//div[@class='x-panel-tbar']/following::div[contains(@class,'x-grid3-row') and not(contains(@class,'checker'))]"));
+			for (WebElement eachResult : searchResults) {
+				List<WebElement> allDivsioninResult = eachResult.findElements(By.tagName("td"));
+				for (WebElement eachDivision : allDivsioninResult) {
+					if (eachDivision.getAttribute("class").contains("study")) {
+						List<WebElement> allDivInsideStudy = eachDivision.findElements(By.tagName("div"));
+						for (WebElement eachDiv : allDivInsideStudy) {
+							List<WebElement> allSpan = eachDiv.findElements(By.tagName("span"));
+							if (!allSpan.isEmpty()) {
+								study = allSpan.get(0).getText().toString().trim();
+							}
+
+							if (study.equals(eachData)) {
+								List<WebElement> insidediv = allDivsioninResult.get(0).findElements(By.tagName("div"));
+								for (WebElement eachInsideDiv : insidediv) {
+									WebElement clicable = eachInsideDiv.findElement(By.tagName("div"));
+									if (!eachResult.getAttribute("class").contains("selected")) {
+										clicable.click();
+									}
+
+									break;
+								}
+							} else {
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 }

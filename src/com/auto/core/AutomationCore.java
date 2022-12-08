@@ -211,7 +211,7 @@ public class AutomationCore extends WrapperClass {
 
 	}
 
-	@Test
+//	@Test
 	public void DxAddAndRemoveTag() throws IOException, InterruptedException {
 
 		try {
@@ -225,6 +225,49 @@ public class AutomationCore extends WrapperClass {
 			urlUtility.centersLabLogin(urlUtility);
 			tagUpdater = new TagUpdater();
 			tagUpdater.diagnosisAddAndRemoveTags();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+//	@Test
+	public void collectiveTagUpdate() throws IOException, InterruptedException {
+
+		try {
+			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+			tagUpdater = new TagUpdater();
+			urlUtility.openUrl("Centers Lab URL");
+			tagUpdater.emosowLoaderWait();
+			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+			urlUtility.centersLabLogin(urlUtility);
+//			tagUpdater.emsowLoggingInWait();
+
+			tagUpdater.collectiveTagUpdate();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	@Test
+	public void addCptAndDx() {
+		try {
+			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+			tagUpdater = new TagUpdater();
+			urlUtility.openUrl("Centers Lab URL");
+			tagUpdater.emosowLoaderWait();
+			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+			urlUtility.centersLabLogin(urlUtility);
+//			tagUpdater.emsowLoggingInWait();
+
+			tagUpdater.addCPtAndDx();
 
 		} catch (Exception e) {
 

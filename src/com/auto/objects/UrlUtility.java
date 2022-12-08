@@ -31,6 +31,7 @@ public class UrlUtility extends WrapperClass {
 		urlUtility.setUserName("Centers Lab Username Box", "Centers Lab Username");
 		urlUtility.setUserName("Centers Lab Password Box", "Centers Lab Password");
 		urlUtility.clickLoginButton("Centers Lab  Login Button");
+
 	}
 
 	public void ChargeEntryLogin(UrlUtility urlUtility) throws InterruptedException {

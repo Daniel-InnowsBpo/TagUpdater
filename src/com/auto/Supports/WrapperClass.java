@@ -169,6 +169,54 @@ public class WrapperClass {
 		}
 	}
 
+	public void buttonStroke_enterKeyWithXpath(String xpath) {
+		try {
+			WebElement element = driver.findElement(By.xpath(xpath));
+			Thread.sleep(1000);
+			element.sendKeys(Keys.RETURN);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+
+		}
+	}
+
+	public void buttonStroke_SpaceKeyWithXpath(String xpath) {
+		try {
+			WebElement element = driver.findElement(By.xpath(xpath));
+			Thread.sleep(1000);
+			element.sendKeys(Keys.SPACE);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+
+		}
+	}
+
+	public void buttonStroke_SpaceKey(String dataSet) {
+		try {
+			String attribute_attributeValue = DataReader.getAttributeandAttributevalue(dataSet);
+			String attribute = attributeSplitter(attribute_attributeValue);
+			String attributeValue = attributeValueSplitter(attribute_attributeValue);
+			WebElement element = LocateHereDefault(attribute, attributeValue);
+			Thread.sleep(1000);
+			element.sendKeys(Keys.SPACE);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			// TODO Auto-generated catch block
+
+		}
+	}
+
 	public String getTextBoxValue(String dataSet) {
 		String attribute_attributeValue = DataReader.getAttributeandAttributevalue(dataSet);
 		String attribute = attributeSplitter(attribute_attributeValue);
@@ -237,6 +285,7 @@ public class WrapperClass {
 			elementName = AttributeFinder.attributefinder(elementName, attributeSplitter(attribute_attributeValue),
 					attributeValueSplitter(attribute_attributeValue));
 			driver.findElement(elementName).click();
+			Thread.sleep(600);
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -314,6 +363,22 @@ public class WrapperClass {
 			textBoxName = AttributeFinder.attributefinder(textBoxName, attributeSplitter(attribute_attributeValue),
 					attributeValueSplitter(attribute_attributeValue));
 			driver.findElement(textBoxName).clear();
+			driver.findElement(textBoxName).sendKeys(dataKey);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void writeSlow(String dataSet, String dataKey, By textBoxName) {
+
+		try {
+			String attribute_attributeValue = DataReader.getAttributeandAttributevalue(dataSet);
+			textBoxName = AttributeFinder.attributefinder(textBoxName, attributeSplitter(attribute_attributeValue),
+					attributeValueSplitter(attribute_attributeValue));
+			driver.findElement(textBoxName).clear();
+
 			driver.findElement(textBoxName).sendKeys(dataKey);
 
 		} catch (Exception e) {
