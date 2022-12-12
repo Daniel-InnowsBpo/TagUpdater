@@ -12,8 +12,15 @@ import com.auto.Supports.WrapperClass;
 public class UrlUtility extends WrapperClass {
 
 	By useThis;
+	int count = 0;
 
 	public UrlUtility(String dataSet) {
+
+		DataReader.getData(dataSet);
+		DataReader.getDataKeyandValue(dataSet);
+	}
+
+	public UrlUtility(String dataSet, int count) {
 
 		DataReader.getData(dataSet);
 		DataReader.getDataKeyandValue(dataSet);
@@ -30,6 +37,14 @@ public class UrlUtility extends WrapperClass {
 
 		urlUtility.setUserName("Centers Lab Username Box", "Centers Lab Username");
 		urlUtility.setUserName("Centers Lab Password Box", "Centers Lab Password");
+		urlUtility.clickLoginButton("Centers Lab  Login Button");
+
+	}
+
+	public void centersLabLogin2(UrlUtility urlUtility) throws InterruptedException {
+
+		urlUtility.setUserName("Centers Lab Username Box", "Centers Lab Username2");
+		urlUtility.setUserName("Centers Lab Password Box", "Centers Lab Password2");
 		urlUtility.clickLoginButton("Centers Lab  Login Button");
 
 	}

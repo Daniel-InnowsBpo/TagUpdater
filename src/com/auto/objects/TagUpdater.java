@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -559,9 +560,9 @@ public class TagUpdater extends WrapperClass {
 	}
 
 	public Map<String, Set<String>> readExcelForCollectiveTagUpdate() throws IOException {
-		readExcelForInput("MissingDx");
+		readExcelForInput("MissingTag");
 		int dataWise = 1;
-		Map<String, Set<String>> collectiveData = new HashMap<>();
+		LinkedHashMap<String, Set<String>> collectiveData = new LinkedHashMap<>();
 
 		Set<String> collectiveStudies = new LinkedHashSet<>();
 //		Map<Integer, Set<String>> orderedCollectiveData = new HashMap<>();
@@ -599,7 +600,9 @@ public class TagUpdater extends WrapperClass {
 		collectiveData = readExcelForCollectiveTagUpdate();
 		clearTabs();
 		openBillingModule();
+
 		for (String serviceId : collectiveData.keySet()) {
+
 			openClaimByServiceId(serviceId);
 //			click("Centers Lab CheckAll CheckBox", useThis);
 			Thread.sleep(700);
@@ -611,6 +614,7 @@ public class TagUpdater extends WrapperClass {
 					break;
 				}
 			}
+			System.out.println("Completed->" + serviceId);
 
 		}
 	}
@@ -687,7 +691,7 @@ public class TagUpdater extends WrapperClass {
 		}
 	}
 
-	private void selectCollective(Set<String> data) {
+	private void selectCollective(Set<String> data) throws InterruptedException {
 		String study = "";
 		for (String eachData : data) {
 //			List<WebElement> searchResults = driver.findElements(By.xpath(
@@ -711,6 +715,7 @@ public class TagUpdater extends WrapperClass {
 								for (WebElement eachInsideDiv : insidediv) {
 									WebElement clicable = eachInsideDiv.findElement(By.tagName("div"));
 									if (!eachResult.getAttribute("class").contains("selected")) {
+										Thread.sleep(1500);
 										clicable.click();
 									}
 

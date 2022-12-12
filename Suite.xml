@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">	
+
+<suite  verbose="1" name="Collective" annotations="JDK">
+         
+  <test name="flipkart" parallel="methods" thread-count="2">
+	 <classes>
+	   <class name="com.auto.core.AutomationCore"/>
+	  
+	 </classes>
+   </test>
+</suite>

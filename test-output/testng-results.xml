@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
+<testng-results ignored="0" total="2" passed="2" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2022-12-08T16:48:05 IST" name="Default suite" finished-at="2022-12-08T16:57:21 IST" duration-ms="556183">
+  <suite started-at="2022-12-12T15:03:10 IST" name="Collective" finished-at="2022-12-12T15:03:28 IST" duration-ms="18021">
     <groups>
     </groups>
-    <test started-at="2022-12-08T16:48:05 IST" name="Default test" finished-at="2022-12-08T16:57:21 IST" duration-ms="556183">
+    <test started-at="2022-12-12T15:03:10 IST" name="flipkart" finished-at="2022-12-12T15:03:28 IST" duration-ms="18021">
       <class name="com.auto.core.AutomationCore">
-        <test-method is-config="true" signature="openWhatsapp()[pri:0, instance:com.auto.core.AutomationCore@1da2cb77]" started-at="2022-12-08T16:48:05 IST" name="openWhatsapp" finished-at="2022-12-08T16:48:06 IST" duration-ms="688" status="PASS">
+        <test-method is-config="true" signature="openWhatsapp()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:10 IST" name="openWhatsapp" finished-at="2022-12-12T15:03:11 IST" duration-ms="600" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- openWhatsapp -->
-        <test-method is-config="true" signature="f()[pri:0, instance:com.auto.core.AutomationCore@1da2cb77]" started-at="2022-12-08T16:48:06 IST" name="f" finished-at="2022-12-08T16:48:06 IST" duration-ms="2" status="PASS">
+        <test-method is-config="true" signature="f()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:11 IST" name="f" finished-at="2022-12-12T15:03:11 IST" duration-ms="1" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- f -->
-        <test-method signature="collectiveTagUpdate()[pri:0, instance:com.auto.core.AutomationCore@1da2cb77]" started-at="2022-12-08T16:48:06 IST" name="collectiveTagUpdate" finished-at="2022-12-08T16:57:21 IST" duration-ms="555195" status="PASS">
+        <test-method is-config="true" signature="f()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:11 IST" name="f" finished-at="2022-12-12T15:03:11 IST" duration-ms="2" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- f -->
+        <test-method signature="collectiveTagUpdate2()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:11 IST" name="collectiveTagUpdate2" finished-at="2022-12-12T15:03:28 IST" duration-ms="16956" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- collectiveTagUpdate2 -->
+        <test-method signature="collectiveTagUpdate()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:11 IST" name="collectiveTagUpdate" finished-at="2022-12-12T15:03:28 IST" duration-ms="17031" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- collectiveTagUpdate -->
-        <test-method is-config="true" signature="closeBrowers()[pri:0, instance:com.auto.core.AutomationCore@1da2cb77]" started-at="2022-12-08T16:57:21 IST" name="closeBrowers" finished-at="2022-12-08T16:57:21 IST" duration-ms="253" status="PASS">
+        <test-method is-config="true" signature="closeBrowers()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:28 IST" name="closeBrowers" finished-at="2022-12-12T15:03:28 IST" duration-ms="328" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- closeBrowers -->
       </class> <!-- com.auto.core.AutomationCore -->
-    </test> <!-- Default test -->
-  </suite> <!-- Default suite -->
+    </test> <!-- flipkart -->
+  </suite> <!-- Collective -->
 </testng-results>
