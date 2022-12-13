@@ -12,13 +12,14 @@ import java.util.Set;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 import com.auto.Supports.DataReader;
 import com.auto.Supports.WrapperClass;
 
 public class TagUpdater extends WrapperClass {
-	private By useThis;
-	Map<String, Map<Integer, Map<String, String>>> dataFromExcelWorkBook = new HashMap<>();
+	private static By useThis;
+	static Map<String, Map<Integer, Map<String, String>>> dataFromExcelWorkBook = new HashMap<>();
 	ExcelReadWrite excelReadWrite = new ExcelReadWrite();
 	TagFinderWriteObject tagWriteObject;
 	ArrayList<String> removedTags = new ArrayList<>();
@@ -33,6 +34,7 @@ public class TagUpdater extends WrapperClass {
 	public TagUpdater() {
 		DataReader.getData("Centers Lab");
 		DataReader.getDataKeyandValue("Centers Lab");
+		setDriver();
 	}
 
 	public void updateTag() throws InterruptedException, IOException {
@@ -331,7 +333,25 @@ public class TagUpdater extends WrapperClass {
 
 	}
 
-	private void openBillingModule() {
+	public void openClaim(int i, String by) throws InterruptedException {
+
+		emosowLoaderWait();
+		click("Centers Lab Billing Chechbox", useThis);
+
+		if (by.equalsIgnoreCase("Accession")) {
+			writeHere("Centers Lab Accession Number Box",
+					dataFromExcelWorkBook.get("Sheet1").get(i).get("A/N").toString(), useThis);
+		} else if (by.equalsIgnoreCase("Service ID")) {
+			writeHere("Centers Lab Service ID Box",
+					dataFromExcelWorkBook.get("Sheet1").get(i).get("Service ID").toString(), useThis);
+		}
+
+		click("Centers Lab Find Button", useThis);
+		emosowLoaderWait();
+
+	}
+
+	public void openBillingModule() {
 
 		click("Centers Lab Billing DropDown", useThis);
 		click("Centers Lab Billing Option", useThis);
@@ -643,6 +663,14 @@ public class TagUpdater extends WrapperClass {
 
 	}
 
+	private void openBillingEdit() {
+		emosowLoaderWait();
+		click("Centers Lab Service Edit  button", useThis);
+		click("Centers Billing Edit", useThis);
+		emosowLoaderWait();
+
+	}
+
 	private void addCPTdx(int i) throws InterruptedException {
 		List<WebElement> availablestudies = findElements("Centers lab Number of studies");
 		int numberOfStudiesPresent = availablestudies.size();
@@ -731,4 +759,82 @@ public class TagUpdater extends WrapperClass {
 		}
 	}
 
+	public void holdClaim() throws IOException, InterruptedException {
+		readExcelForInput("HoldClaim");
+		clearTabs();
+		openBillingModule();
+		for (int i = 1; i < dataFromExcelWorkBook.get("Sheet1").size(); i++) {
+			openClaim(i, "Service ID");
+			selectCollective(dataFromExcelWorkBook.get("Sheet1").get(i).get("CPT"));
+			openBillingEdit();
+			verifyAndHold();
+			emosowLoaderWait();
+			emosowLoaderWait();
+			click("Centers Lab Billing Edit Close Button", useThis);
+			emosowLoaderWait();
+			System.out.println("COmpleted->" + dataFromExcelWorkBook.get("Sheet1").get(i).get("Service ID"));
+		}
+	}
+
+	private void verifyAndHold() throws InterruptedException {
+		List<WebElement> submittedText = findElements("Centers Lab Not Submitted");
+		for (WebElement text : submittedText) {
+			if (text.getText().toLowerCase().contains("electronic claim for primary insurance")) {
+				if (text.getText().toLowerCase().contains("(not submitted)")) {
+					if (!text.getText().toLowerCase().contains("on hold")) {
+						hoverAndLock();
+					}
+
+				}
+			}
+		}
+	}
+
+	private void hoverAndLock() throws InterruptedException {
+		Actions actions = new Actions(driver);
+		WebElement element = findElement("Centers Lab Not Submitted");
+		actions.moveToElement(element).perform();
+		Thread.sleep(1000);
+		click("Centers Lab lock", useThis);
+	}
+
+	public void selectCollective(String data) throws InterruptedException {
+		String study = "";
+//		for (String eachData : data) {
+//			List<WebElement> searchResults = driver.findElements(By.xpath(
+//					"//div[@class='x-panel-tbar']/following::div[contains(@class,'x-grid3-row') and not(contains(@class,'checker'))]//td[contains(@class,'study')]//div[@class='text-center']/span"));
+
+		List<WebElement> searchResults = driver.findElements(By.xpath(
+				"//div[@class='x-panel-tbar']/following::div[contains(@class,'x-grid3-row') and not(contains(@class,'checker'))]"));
+		for (WebElement eachResult : searchResults) {
+			List<WebElement> allDivsioninResult = eachResult.findElements(By.tagName("td"));
+			for (WebElement eachDivision : allDivsioninResult) {
+				if (eachDivision.getAttribute("class").contains("study")) {
+					List<WebElement> allDivInsideStudy = eachDivision.findElements(By.tagName("div"));
+					for (WebElement eachDiv : allDivInsideStudy) {
+						List<WebElement> allSpan = eachDiv.findElements(By.tagName("span"));
+						if (!allSpan.isEmpty()) {
+							study = allSpan.get(0).getText().toString().trim();
+						}
+
+						if (study.equals(data)) {
+							List<WebElement> insidediv = allDivsioninResult.get(0).findElements(By.tagName("div"));
+							for (WebElement eachInsideDiv : insidediv) {
+								WebElement clicable = eachInsideDiv.findElement(By.tagName("div"));
+								if (!eachResult.getAttribute("class").contains("selected")) {
+									Thread.sleep(1500);
+									clicable.click();
+								}
+
+								break;
+							}
+						} else {
+							break;
+						}
+					}
+				}
+			}
+//			}
+		}
+	}
 }

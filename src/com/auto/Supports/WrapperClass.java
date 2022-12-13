@@ -26,6 +26,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.auto.objects.UrlUtility;
+
 public class WrapperClass {
 
 	SimpleFormatter formatter;
@@ -65,9 +67,14 @@ public class WrapperClass {
 		 * DesiredCapabilities.chrome();
 		 * capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 		 */
+
 		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\driver\\chromedriver.exe");
 
 		System.out.println("intialised");
+	}
+
+	public void setDriver() {
+		driver = UrlUtility.getDriver();
 	}
 
 	public void dragndrop(String srcAttribute, String srcAttributeValue, String destAttribute,
@@ -326,14 +333,14 @@ public class WrapperClass {
 
 	}
 
-	public String attributeSplitter(String attribute_attributeValue) {
+	public static String attributeSplitter(String attribute_attributeValue) {
 
 		String[] splittedAttributeandAttributeValue = attribute_attributeValue.split("#");
 		String attribute = splittedAttributeandAttributeValue[0];
 		return attribute;
 	}
 
-	public String attributeValueSplitter(String attribute_attributeValue) {
+	public static String attributeValueSplitter(String attribute_attributeValue) {
 
 		String[] splittedAttributeandAttributeValue = attribute_attributeValue.split("#");
 		String attributeValue = splittedAttributeandAttributeValue[1];
@@ -707,7 +714,7 @@ public class WrapperClass {
 
 	public static void waitForNow(String type, String value) {
 
-		// waiting= new WebDriverWait(driver,30);
+		waiting = new WebDriverWait(driver, 30);
 		try {
 			if (type.equalsIgnoreCase("Xpath")) {
 

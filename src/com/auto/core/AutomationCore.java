@@ -3,6 +3,7 @@ package com.auto.core;
 import java.io.IOException;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -108,6 +109,10 @@ public class AutomationCore extends WrapperClass {
 
 	}
 
+	public void setDriver(WebDriver driver) {
+		this.driver = UrlUtility.getDriver();
+	}
+
 //	@Test
 	public void tagUpdaterWithServiceID() throws IOException, InterruptedException {
 
@@ -144,6 +149,28 @@ public class AutomationCore extends WrapperClass {
 			urlUtility.centersLabLogin(urlUtility);
 			writeOffAndClose = new WriteOffAndClose();
 			writeOffAndClose.ManualWriteOff();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	@Test
+	public void manualWriteOffBasedOnStudy() throws IOException, InterruptedException {
+
+		try {
+			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+			urlUtility.openUrl("Centers Lab URL");
+//			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+//					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+
+			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+			urlUtility.centersLabLogin(urlUtility);
+			writeOffAndClose = new WriteOffAndClose();
+			writeOffAndClose.writeOffBasedOnStudy();
 
 		} catch (Exception e) {
 
@@ -233,16 +260,18 @@ public class AutomationCore extends WrapperClass {
 
 	}
 
-	@Test
+//	@Test
 	public void collectiveTagUpdate() throws IOException, InterruptedException {
 
 		try {
+
 			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+			urlUtility.openUrl("Centers Lab URL", driver);
 			tagUpdater = new TagUpdater();
-			urlUtility.openUrl("Centers Lab URL");
 			tagUpdater.emosowLoaderWait();
-			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
-					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+
+//			waiting.until(ExpectedConditions.elementToBeClickable(WrapperClass.driver.findElement(By.xpath(
+//					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
 			urlUtility.centersLabLogin(urlUtility);
 //			tagUpdater.emsowLoggingInWait();
 
@@ -252,19 +281,19 @@ public class AutomationCore extends WrapperClass {
 
 			e.printStackTrace();
 		}
-
 	}
 
-	@Test
+//	@Test
 	public void collectiveTagUpdate2() throws IOException, InterruptedException {
 
 		try {
 			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+
+			urlUtility.openUrl("Centers Lab URL", driver);
 			tagUpdater = new TagUpdater();
-			urlUtility.openUrl("Centers Lab URL");
 			tagUpdater.emosowLoaderWait();
-			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
-					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+//			waiting.until(ExpectedConditions.elementToBeClickable(WrapperClass.driver.findElement(By.xpath(
+//					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
 			urlUtility.centersLabLogin2(urlUtility);
 //			tagUpdater.emsowLoggingInWait();
 
@@ -284,12 +313,33 @@ public class AutomationCore extends WrapperClass {
 			tagUpdater = new TagUpdater();
 			urlUtility.openUrl("Centers Lab URL");
 			tagUpdater.emosowLoaderWait();
-			waiting.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
+			waiting.until(ExpectedConditions.elementToBeClickable(WrapperClass.driver.findElement(By.xpath(
 					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
 			urlUtility.centersLabLogin(urlUtility);
 //			tagUpdater.emsowLoggingInWait();
 
 			tagUpdater.addCPtAndDx();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+//	@Test
+	public void HoldClaim() {
+		try {
+			UrlUtility urlUtility = new UrlUtility("Centers Lab");
+			tagUpdater = new TagUpdater();
+			urlUtility.openUrl("Centers Lab URL");
+			tagUpdater.emosowLoaderWait();
+			waiting.until(ExpectedConditions.elementToBeClickable(WrapperClass.driver.findElement(By.xpath(
+					"//div[text()='Welcome to Centers Lab NJ LLC d/b/a MedLabs Diagnostics. You need to logon to continue']"))));
+			urlUtility.centersLabLogin(urlUtility);
+//			tagUpdater.emsowLoggingInWait();
+
+			tagUpdater.holdClaim();
 
 		} catch (Exception e) {
 

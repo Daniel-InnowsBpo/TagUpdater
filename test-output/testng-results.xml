@@ -1,37 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results ignored="0" total="2" passed="2" failed="0" skipped="0">
+<testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2022-12-12T15:03:10 IST" name="Collective" finished-at="2022-12-12T15:03:28 IST" duration-ms="18021">
+  <suite started-at="2022-12-13T14:48:49 IST" name="Default suite" finished-at="2022-12-13T14:49:57 IST" duration-ms="67862">
     <groups>
     </groups>
-    <test started-at="2022-12-12T15:03:10 IST" name="flipkart" finished-at="2022-12-12T15:03:28 IST" duration-ms="18021">
+    <test started-at="2022-12-13T14:48:49 IST" name="Default test" finished-at="2022-12-13T14:49:57 IST" duration-ms="67862">
       <class name="com.auto.core.AutomationCore">
-        <test-method is-config="true" signature="openWhatsapp()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:10 IST" name="openWhatsapp" finished-at="2022-12-12T15:03:11 IST" duration-ms="600" status="PASS">
+        <test-method is-config="true" signature="openWhatsapp()[pri:0, instance:com.auto.core.AutomationCore@1af2d44a]" started-at="2022-12-13T14:48:49 IST" name="openWhatsapp" finished-at="2022-12-13T14:48:50 IST" duration-ms="601" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- openWhatsapp -->
-        <test-method is-config="true" signature="f()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:11 IST" name="f" finished-at="2022-12-12T15:03:11 IST" duration-ms="1" status="PASS">
+        <test-method is-config="true" signature="f()[pri:0, instance:com.auto.core.AutomationCore@1af2d44a]" started-at="2022-12-13T14:48:50 IST" name="f" finished-at="2022-12-13T14:48:50 IST" duration-ms="2" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- f -->
-        <test-method is-config="true" signature="f()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:11 IST" name="f" finished-at="2022-12-12T15:03:11 IST" duration-ms="2" status="PASS">
+        <test-method signature="manualWriteOffBasedOnStudy()[pri:0, instance:com.auto.core.AutomationCore@1af2d44a]" started-at="2022-12-13T14:48:50 IST" name="manualWriteOffBasedOnStudy" finished-at="2022-12-13T14:49:56 IST" duration-ms="66826" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- f -->
-        <test-method signature="collectiveTagUpdate2()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:11 IST" name="collectiveTagUpdate2" finished-at="2022-12-12T15:03:28 IST" duration-ms="16956" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- collectiveTagUpdate2 -->
-        <test-method signature="collectiveTagUpdate()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:11 IST" name="collectiveTagUpdate" finished-at="2022-12-12T15:03:28 IST" duration-ms="17031" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- collectiveTagUpdate -->
-        <test-method is-config="true" signature="closeBrowers()[pri:0, instance:com.auto.core.AutomationCore@5acf93bb]" started-at="2022-12-12T15:03:28 IST" name="closeBrowers" finished-at="2022-12-12T15:03:28 IST" duration-ms="328" status="PASS">
+        </test-method> <!-- manualWriteOffBasedOnStudy -->
+        <test-method is-config="true" signature="closeBrowers()[pri:0, instance:com.auto.core.AutomationCore@1af2d44a]" started-at="2022-12-13T14:49:56 IST" name="closeBrowers" finished-at="2022-12-13T14:49:57 IST" duration-ms="389" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- closeBrowers -->
       </class> <!-- com.auto.core.AutomationCore -->
-    </test> <!-- flipkart -->
-  </suite> <!-- Collective -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
 </testng-results>

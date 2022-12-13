@@ -102,7 +102,7 @@ public class WriteOffAndClose extends WrapperClass {
 
 			click("Centers Lab Find Button", useThis);
 			emosowLoaderWait();
-			verifyStatusAndWriteoff();
+			verifyStatusAndWriteoff(i);
 			System.out.println("Completed Record->" + dataFromExcelWorkBook.get("Sheet1").get(i).get("A/N").toString());
 		}
 
@@ -161,14 +161,76 @@ public class WriteOffAndClose extends WrapperClass {
 
 	}
 
-	private void verifyStatusAndWriteoff() throws InterruptedException {
+	private boolean verifyStudyAndClickIfMatches(WebElement eachResult, String data) throws InterruptedException {
+		boolean clicked = false;
+		String study = null;
+		List<WebElement> allDivsioninResult = eachResult.findElements(By.tagName("td"));
+		for (WebElement eachDivision : allDivsioninResult) {
+			if (eachDivision.getAttribute("class").contains("study")) {
+				List<WebElement> allDivInsideStudy = eachDivision.findElements(By.tagName("div"));
+				for (WebElement eachDiv : allDivInsideStudy) {
+					List<WebElement> allSpan = eachDiv.findElements(By.tagName("span"));
+					if (!allSpan.isEmpty()) {
+						study = allSpan.get(0).getText().toString().trim();
+					}
+					if (study.equals(data)) {
+						List<WebElement> insidediv = allDivsioninResult.get(0).findElements(By.tagName("div"));
+						for (WebElement eachInsideDiv : insidediv) {
+							WebElement clicable = eachInsideDiv.findElement(By.tagName("div"));
+							if (!eachResult.getAttribute("class").contains("selected")) {
+								Thread.sleep(1500);
+								clicable.click();
+								clicked = true;
+							}
+
+							break;
+						}
+					} else {
+						break;
+					}
+				}
+			}
+		}
+//		}
+		return clicked;
+
+	}
+
+	private void verifyStatusAndWriteoff(int i) throws InterruptedException {
 
 		List<WebElement> searchResults = findElements("Centers Lab Claim Search Results");
 		for (WebElement eachResult : searchResults) {
+
 			proCode = getProcCode(eachResult);
 			if (proCode.toLowerCase().contains("p") || proCode.toLowerCase().contains("g")) {
 				clickChecker(eachResult);
-				writeOff(scrollToDenialView(eachResult), "medicaid, G0471, P9603 not covered");
+				writeOff(scrollToDenialView(eachResult), dataFromExcelWorkBook.get("Sheet1").get(i).get("Tag"));
+				unselectRecord();
+//				click("Centers Lab Service Edit  button", useThis);
+//				click("Centers Lab Billing Edit Option", useThis);
+//				emosowLoaderWait();
+//
+//				if (verifyDenied()) {
+//					click("Centers Lab Billing Edit Close Button", useThis);
+//					emosowLoaderWait();
+//					writeOff(scrollToDenialView(eachResult));
+//					emosowLoaderWait();
+//				} else {
+//					click("Centers Lab Billing Edit Close Button", useThis);
+//					emosowLoaderWait();
+//				}
+
+			}
+		}
+	}
+
+	private void verifyStudyAndWriteOff(int i) throws InterruptedException {
+
+		List<WebElement> searchResults = findElements("Centers Lab Claim Search Results");
+		for (WebElement eachResult : searchResults) {
+			if (verifyStudyAndClickIfMatches(eachResult,
+					dataFromExcelWorkBook.get("Sheet1").get(i).get("CPT").trim())) {
+				writeOff(scrollToDenialView(eachResult), dataFromExcelWorkBook.get("Sheet1").get(i).get("Tag"));
 				unselectRecord();
 //				click("Centers Lab Service Edit  button", useThis);
 //				click("Centers Lab Billing Edit Option", useThis);
@@ -434,5 +496,42 @@ public class WriteOffAndClose extends WrapperClass {
 			unselectRecord();
 		}
 
+	}
+
+	public void openClaim(int i, String by) throws InterruptedException {
+
+		emosowLoaderWait();
+		click("Centers Lab Billing Chechbox", useThis);
+
+		if (by.equalsIgnoreCase("Accession")) {
+			writeHere("Centers Lab Accession Number Box",
+					dataFromExcelWorkBook.get("Sheet1").get(i).get("A/N").toString(), useThis);
+		} else if (by.equalsIgnoreCase("Service ID")) {
+			writeHere("Centers Lab Service ID Box",
+					dataFromExcelWorkBook.get("Sheet1").get(i).get("Service ID").toString(), useThis);
+		}
+
+		click("Centers Lab Find Button", useThis);
+		emosowLoaderWait();
+
+	}
+
+	public void openBillingModule() {
+
+		click("Centers Lab Billing DropDown", useThis);
+		click("Centers Lab Billing Option", useThis);
+
+		emosowLoaderWait();
+	}
+
+	public void writeOffBasedOnStudy() throws IOException, InterruptedException {
+		readExcelForInput("WriteOffBasedOnStudy");
+		clearTabs();
+		openBillingModule();
+		for (int i = 1; i < dataFromExcelWorkBook.get("Sheet1").size(); i++) {
+			openClaim(i, "Accession");
+			verifyStudyAndWriteOff(i);
+			System.out.println("COmpleted->" + dataFromExcelWorkBook.get("Sheet1").get(i).get("A/N"));
+		}
 	}
 }
